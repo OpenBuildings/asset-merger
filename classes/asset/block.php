@@ -2,6 +2,11 @@
 
 /**
 * Combines assets and merges them to single files in production
+*
+* @package    OpenBuildings/asset-merger
+* @author     Ivan K
+* @copyright  (c) 2011 OpenBuildings
+* @license    http://creativecommons.org/licenses/by-sa/3.0/legalcode
 */
 class Asset_Block extends Asset
 {
