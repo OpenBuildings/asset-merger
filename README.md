@@ -30,7 +30,7 @@ And this in Production:
 
 == Virtual folders ==
 
-Asset merger combines all your asset files and puts them in a single folder in a publicly accessable directory. THis way you can have your assets wherever you want, even outside the document root. When you use the js / css methods of the Asset class it searches the directories you've configured and caches the files to your web folder - both the merged and the individual files
+Asset merger combines all your asset files and puts them in a single folder in a publicly accessable directory. This way you can have your assets wherever you want, even outside the document root. When you use the js / css methods of the Asset class it searches the directories you've configured and caches the files to your web folder - both the merged and the individual files
 
 == Configuration ==
 
@@ -48,17 +48,17 @@ config/asset-merger.php config file has a bunch of settings. Typical config file
 		)
 	);
 
-merge :
-	Define the environments that will have a merged version of the assets. This can either be an array or a single environment constant.
+__merge__:
+Define the environments that will have a merged version of the assets. This can either be an array or a single environment constant.
 
-folder :
-	The URL to the folder that will contain the assets. Will be automatically generated if it's not present in the filesystem. Must be inside DOCROOT.
+__folder__:
+The URL to the folder that will contain the assets. Will be automatically generated if it's not present in the filesystem. Must be inside DOCROOT.
 
-load_paths :
-	Where to search for files. The css and js files have different directories. Each can be an array of directories.
+__load_paths__:
+Where to search for files. The css and js files have different directories. Each can be an array of directories.
 
-processor :
-	The default processor to be used on each type. This can be overriden for any individual file.
+__processor__:
+The default processor to be used on each type. This can be overriden for any individual file.
 
 == Engines == 
 
