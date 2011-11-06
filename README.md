@@ -1,4 +1,5 @@
-== Asset Merger ==
+Asset Merger
+============
 
 This is a Kohana 3 module used to merge and and preprocess css and javascript files.
 
@@ -28,11 +29,13 @@ And this in Production:
 	<script type="text/javascript" src="/assets/js/main.js?1320415817"></script>
 	<link type="text/css" href="/assets/css/main.css?1320508620" rel="stylesheet" />
 
-== Virtual folders ==
+Virtual folders
+---------------
 
 Asset merger combines all your asset files and puts them in a single folder in a publicly accessable directory. This way you can have your assets wherever you want, even outside the document root. When you use the js / css methods of the Asset class it searches the directories you've configured and caches the files to your web folder - both the merged and the individual files
 
-== Configuration ==
+Configuration
+-------------
 
 config/asset-merger.php config file has a bunch of settings. Typical config file looks like this:
 
@@ -60,7 +63,8 @@ Where to search for files. The css and js files have different directories. Each
 __processor__:
 The default processor to be used on each type. This can be overriden for any individual file.
 
-== Engines == 
+Engines
+-------
 
 The assets class does some processing of the files based on the filename extension. For example if the file ends with .less it will be put through the lessphp processor, And if it ends with php - through raw php. You can also chain Engines so
 
@@ -75,7 +79,8 @@ __Available engines__ :
  - sass - PHamlP's Sass parser
  - php - raw php
 
-== Processors ==
+Processors
+----------
 
 Each type and individual file can be set to be processed by a processor - this is done mainly to reduse its size. 
 
@@ -87,7 +92,8 @@ __Available engines__ :
  - jsminplus - [http://code.google.com/p/minify/source/browse/trunk/min/lib/JSMinPlus.php](http://code.google.com/p/minify/source/browse/trunk/min/lib/JSMinPlus.php)
 
 
-== Assets Class ==
+Assets Class
+------------
 
 The Assets class exposes methods to add assets to it's queue which it then renderer when you convert it to a string (with echo for example)
 
