@@ -74,9 +74,9 @@ Will first pass it through php then through lessphp
 
 __Available engines__ :
 
- - less - uses Lessphp
- - coffee - Php port of Coffeescript
- - sass - PHamlP's Sass parser
+ - less - [http://leafo.net/lessphp/](http://leafo.net/lessphp/)
+ - coffee - [https://github.com/alxlit/coffeescript-php](https://github.com/alxlit/coffeescript-php)
+ - sass - [http://code.google.com/p/phamlp/](http://code.google.com/p/phamlp/)
  - php - raw php
 
 Processors
@@ -87,7 +87,7 @@ Each type and individual file can be set to be processed by a processor - this i
 __Available engines__ :
 
  - cssmin - [http://code.google.com/p/cssmin/](http://code.google.com/p/cssmin/)
- - css_compressor - [http://minify.googlecode.com/svn/trunk/min/lib/Minify/CSS/Compressor.php](http://minify.googlecode.com/svn/trunk/min/lib/Minify/CSS/Compressor.php)
+ - csscompressor - [http://minify.googlecode.com/svn/trunk/min/lib/Minify/CSS/Compressor.php](http://minify.googlecode.com/svn/trunk/min/lib/Minify/CSS/Compressor.php)
  - jsmin - [http://code.google.com/p/jsmin-php/](http://code.google.com/p/jsmin-php/)
  - jsminplus - [http://code.google.com/p/minify/source/browse/trunk/min/lib/JSMinPlus.php](http://code.google.com/p/minify/source/browse/trunk/min/lib/JSMinPlus.php)
 
@@ -111,13 +111,21 @@ Those methods place arbitrary content inside the que to be rendered. This is use
 
 Forse merging of the files - useful for testing
 
+	function process(bool $process)
+
+Forse processing of the files - useful for testing
+
+
 	function render()
 
 Render the whole queue, this is called automatically on __toString
 
 
 
+Extending
+---------
 
+You can Add your own engines and processors easily by adding a class inside classes/asset/engine, or classes/asset/processor respectfully. The class must have a static method process which will return the desired result.
 	
 
 

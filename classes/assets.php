@@ -10,6 +10,7 @@ class Assets
 
 	private $assets;
 	private $_merge = false;
+	private $_process = false;
 	private $_name;
 
 	private $remote = array();
@@ -26,7 +27,7 @@ class Assets
 			$this->groups[$type] = new Asset_Collection($type, $name);
 		}
 		$this->_name = $name;
-		$this->_merge = in_array(Kohana::$environment, (array) Kohana::$config->load('asset-merger.merge'));
+		$this->_process = $this->_merge = in_array(Kohana::$environment, (array) Kohana::$config->load('asset-merger.merge'));
 	}
 
 	public function merge($merge = NULL)
@@ -42,6 +43,19 @@ class Assets
 		}
 	}
 
+	public function process($process = NULL)
+	{
+		if( $process !== NULL)
+		{
+			$this->_process = (bool) $process;
+			return $this;
+		}
+		else
+		{
+			return $this->_process;
+		}
+	}	
+
 	function __toString()
 	{
 		return $this->render();
@@ -54,13 +68,13 @@ class Assets
 		{
 			if($this->merge())
 			{
-				$html[] = $group->render(TRUE);
+				$html[] = $group->render($this->_process);
 			}
 			else
 			{
 				foreach($group as $asset)
 				{
-					$html[] = $asset->render();		
+					$html[] = $asset->render($this->_process);		
 				}
 			}
 		}
