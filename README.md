@@ -4,7 +4,7 @@ Asset Merger
 Blog Post
 ---------
 
-[https://github.com/OpenBuildings/asset-merger](https://github.com/OpenBuildings/asset-merger)
+[http://ivank.github.com/blog/2011/11/kohana-assets-done-right/](http://ivank.github.com/blog/2011/11/kohana-assets-done-right/)
 
 This is a Kohana 3 module used to merge and and preprocess css and javascript files.
 
