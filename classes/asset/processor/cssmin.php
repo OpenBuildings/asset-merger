@@ -4,7 +4,7 @@
 * cssmin processor
 *
 * @package    OpenBuildings/asset-merger
-* @author     Ivan K
+* @author     Ivan Kerin
 * @copyright  (c) 2011 OpenBuildings Inc.
 * @license    http://creativecommons.org/licenses/by-sa/3.0/legalcode
 */
