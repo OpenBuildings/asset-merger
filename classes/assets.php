@@ -19,6 +19,7 @@ class Assets
 	private $_name;
 
 	private $remote = array();
+	private $conditional = array();
 	private $groups = array();
 
 	static public function factory( $name )
@@ -83,43 +84,51 @@ class Assets
 				}
 			}
 		}
+
+		foreach ($this->conditional as $asset) 
+		{
+			$html[] .= "<!--[ if ".$asset->condition().']>'. $asset->render($this->_process).'<![endif]-->';
+		}
+
 		return join("\n", $html);
 		
 	}
 
-	public function add($type, $file, $processor = null)
+	protected function add($class, $type, $file, $options = null)
 	{
 		if( Valid::url($file) )
 		{
 			$this->remote[] = Asset::html($type, $file);
 		}
+		elseif(Arr::get($options, 'condition'))
+		{
+			$this->conditional[] = new $class($type, $file, $options);
+		}
 		else
 		{
-			$this->groups[$type][] = new Asset($type, $file, $processor);
+			$this->groups[$type][] = new $class($type, $file, $options);
 		}
 		return $this;
 	}
 
-	public function css($file, $processor = null)
+	public function css($file, $options = null)
 	{
-		return $this->add(Assets::STYLESHEET, $file, $processor);
+		return $this->add('Asset', Assets::STYLESHEET, $file, $options);
 	}
 
-	public function js($file, $processor = null)
+	public function js($file, $options = null)
 	{
-		return $this->add(Assets::JAVASCRIPT, $file, $processor);
+		return $this->add('Asset', Assets::JAVASCRIPT, $file, $options);
 	}
 
-	public function js_block($script, $processor = null)
+	public function js_block($script, $options = null)
 	{
-		$this->groups[Assets::JAVASCRIPT][] = new Asset_Block(Assets::JAVASCRIPT, $script, $processor);
-		return $this;
+		return $this->add('Asset_Block', Assets::JAVASCRIPT, $script, $options);
 	}
 
 	public function css_block($css, $processor = null)
 	{
-		$this->groups[Assets::STYLESHEET][] = new Asset_Block(Assets::STYLESHEET, $css, $processor);
-		return $this;
+		return $this->add('Asset_Block', Assets::STYLESHEET, $css, $options);
 	}
 
 

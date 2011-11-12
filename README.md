@@ -10,39 +10,67 @@ This is a Kohana 3 module used to merge and and preprocess css and javascript fi
 
 Quick Example: 
 
+``` php
 	<?php echo Assets::factory('main')
 		->css('site/homepage.css.less')
-		->css('main.css.less', 'cssmin')
+		->css('main.css.less', array('processor' => 'cssmin')
+		->css('ie.css.less', array('condition' => 'gte IE 7')
 		->css('notifications.css')
 		->js("http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js")
 		->js_block("window.asset_merger = true;")
 		->js("functions.js", "jsmin")
 	?>
+```
 
 This will output this in Development:
 	
+``` html
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 	<script type="text/javascript">window.asset_merger = true;</script>
 	<script type="text/javascript" src="/assets/js/functions.js?1320415817"></script>
 	<link type="text/css" href="/assets/css/site/homepage.css.less?1320504157" rel="stylesheet" />
-	<link type="text/css" href="/assets/css/main.css.less?1320508620" rel="stylesheet" />
-	<link type="text/css" href="/assets/css/notifications.css?1320227001" rel="stylesheet" />  					
-		
+	<link type="text/css" href="/assets/css/main.css?1320508620" rel="stylesheet" />
+	<link type="text/css" href="/assets/css/notifications.css?1320227001" rel="stylesheet" />
+	<!--[IF gte IE 7]><link type="text/css" href="/assets/css/ie.css?1320227001" rel="stylesheet" /><![endif]-->
+```
+
 And this in Production:
 
+``` html
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 	<script type="text/javascript" src="/assets/js/main.js?1320415817"></script>
 	<link type="text/css" href="/assets/css/main.css?1320508620" rel="stylesheet" />
+	<!--[IF gte IE 7]><link type="text/css" href="/assets/css/ie.css?1320227001" rel="stylesheet" /><![endif]-->
+```
 
 Virtual folders
 ---------------
 
-Asset merger combines all your asset files and puts them in a single folder in a publicly accessable directory. This way you can have your assets wherever you want, even outside the document root. When you use the js / css methods of the Asset class it searches the directories you've configured and caches the files to your web folder - both the merged and the individual files
+Asset merger combines all your asset files and puts them in a single folder in a publicly accessible directory. This way you can have your assets wherever you want, even outside the document root. When you use the js / css methods of the Asset class it searches the directories you've configured and caches the files to your web folder - both the merged and the individual files.
+
+Remote Files
+------------
+Asset merger does not do anything to remote files (starting with http://) just adds an html link/script tag to that resource.
+
+IE Conditional Comments
+-----------------------
+It's a common practice to have conditional comments for CSS / JS files specifically for IE to fight some of it shortcomings. This is supported by asset merger. Assets class methods support a 'condition' option which will wrap the link / script tag in a IE conditional comment.
+
+``` php
+	<?php echo Assets::factory('main')
+		->css('site/homepage.css.less')
+		->css('ie.css.less', array('condition' => 'gte IE 7'))
+		->css('notifications.css')
+		->js_block("window.asset_merger = true;", array('condition' => 'gte IE 7'))
+		->js("functions.js", "jsmin")
+	?>
+```
+
 
 Configuration
 -------------
 
-config/asset-merger.php config file has a bunch of settings. Typical config file looks like this:
+config/asset-merger.php configuration file has a bunch of settings. Typical configuration file looks like this:
 
 	return array(
 		'merge' => Kohana::PRODUCTION,
@@ -60,22 +88,22 @@ __merge__:
 Define the environments that will have a merged version of the assets. This can either be an array or a single environment constant.
 
 __folder__:
-The URL to the folder that will contain the assets. Will be automatically generated if it's not present in the filesystem. Must be inside DOCROOT.
+The URL to the folder that will contain the assets. Will be automatically generated if it's not present in the file system. Must be inside DOCROOT.
 
 __load_paths__:
-Where to search for files. The css and js files have different directories. Each can be an array of directories.
+Where to search for files. The CSS and JS files have different directories. Each can be an array of directories.
 
 __processor__:
-The default processor to be used on each type. This can be overriden for any individual file.
+The default processor to be used on each type. This can be overridden for any individual file.
 
 Engines
 -------
 
-The assets class does some processing of the files based on the filename extension. For example if the file ends with .less it will be put through the lessphp processor, And if it ends with php - through raw php. You can also chain Engines so
+The assets class does some processing of the files based on the filename extension. For example if the file ends with .less it will be put through the LESSPHP processor, And if it ends with PHP - through raw PHP. You can also chain Engines so
 
 	main.css.less.php
 
-Will first pass it through php then through lessphp
+Will first pass it through PHP then through LESSPHP
 
 __Available engines__ :
 
@@ -87,7 +115,7 @@ __Available engines__ :
 Processors
 ----------
 
-Each type and individual file can be set to be processed by a processor - this is done mainly to reduse its size. 
+Each type and individual file can be set to be processed by a processor - this is done mainly to reduce its size. 
 
 __Available engines__ :
 
@@ -105,20 +133,20 @@ The Assets class exposes methods to add assets to it's queue which it then rende
 	function css($file, $processor = null)
 	function js($file, $processor = null)
 
-Add an asset file to the queue. Thy will be outputed in the order that's given. Or if the files are merged, will appear in the merged files in that order. The second parameter overrides the default processor. You can pass FALSE to disable processing
+Add an asset file to the queue. Thy will be outputted in the order that's given. Or if the files are merged, will appear in the merged files in that order. The second parameter overrides the default processor. You can pass FALSE to disable processing
 
 	function css_block($content, $processor = null)
 	function js_block($content, $processor = null)
 
-Those methods place arbitrary content inside the que to be rendered. This is useful when you want javascript/css to appear in an exact place in your assets loading.
+Those methods place arbitrary content inside the queue to be rendered. This is useful when you want javascript/css to appear in an exact place in your assets loading.
 
 	function merge(bool $merge)
 
-Forse merging of the files - useful for testing
+Force merging of the files - useful for testing
 
 	function process(bool $process)
 
-Forse processing of the files - useful for testing
+Force processing of the files - useful for testing
 
 
 	function render()

@@ -14,9 +14,11 @@ class Asset_Block extends Asset
 
 	private $_last_modified = null;
 
-	function __construct($type, $content, $processor = null)
+	function __construct($type, $content, $options = null)
 	{
-		$this->processor = $processor ? $processor : Kohana::$config->load("asset-merger.processor.$type");
+		$this->processor = Arr::get($options, 'processor', Kohana::$config->load("asset-merger.processor.$type"));
+		$this->condition = Arr::get($options, 'condition');
+		
 		$this->content = $content;
 		$this->file = "Asset Block";
 		$this->type = $type;

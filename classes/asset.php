@@ -13,11 +13,12 @@ class Asset
 	public $type = null;
 	public $file = null;
 	
-	private $engines = array();
-	private $processor = array();
-	private $source_file = null;
-	private $destination_web = null;
-	private $destination_file = null;
+	protected $engines = array();
+	protected $processor = array();
+	protected $source_file = null;
+	protected $destination_web = null;
+	protected $destination_file = null;
+	protected $condition = null;
 
 	private $_last_modified = null;
 
@@ -25,19 +26,26 @@ class Asset
 	{
 		return $this->source_file;
 	}
+
 	public function destination_web()
 	{
 		return $this->destination_web;
 	}
+
 	public function destination_file()
 	{
 		return $this->destination_file;
 	}
 	
-
-	function __construct($type, $file, $processor = null)
+	public function condition()
 	{
-		$this->processor = $processor ? $processor : Kohana::$config->load("asset-merger.processor.$type");
+		return $this->condition;
+	}
+
+	function __construct($type, $file, $options = null)
+	{
+		$this->processor = Arr::get($options, 'processor', Kohana::$config->load("asset-merger.processor.$type"));
+		$this->condition = Arr::get($options, 'condition');
 
 		$this->type = $type;
 		$this->file = $file;
