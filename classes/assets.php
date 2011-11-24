@@ -149,14 +149,14 @@ class Assets
 
 	static public function file_path( $type, $file )
 	{
-		$file = substr($file, 0, strpos($file, $type)) . $type;
+		$file = substr($file, 0, strrpos($file, $type)) . $type;
 
 		return DOCROOT.Kohana::$config->load("asset-merger.folder").DIRECTORY_SEPARATOR.$type.DIRECTORY_SEPARATOR.$file;
 	}
 
 	static public function web_path( $type, $file)
 	{
-		$file = substr($file, 0, strpos($file, $type)) . $type;
+		$file = substr($file, 0, strrpos($file, $type)) . $type;
 
 		return Kohana::$config->load("asset-merger.folder").'/'.$type.'/'.$file;
 	}
