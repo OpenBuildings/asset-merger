@@ -13,7 +13,7 @@ class Assets
 	const JAVASCRIPT = 'js';
 	const STYLESHEET = 'css';
 
-	private $assets;
+	private $assets = array();
 	private $_merge = false;
 	private $_process = false;
 	private $_name;
