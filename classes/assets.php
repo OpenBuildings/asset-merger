@@ -91,14 +91,46 @@ class Assets
 		}
 
 		return join("\n", $html);
-		
 	}
+
+	public function inline()
+	{
+		$html = $this->remote;
+		foreach ($this->groups as $type => $group) 
+		{
+			if($this->merge())
+			{
+				$html[] = $group->inline($this->_process);
+			}
+			else
+			{
+				foreach($group as $asset)
+				{
+					$html[] = $asset->inline($this->_process);		
+				}
+			}
+		}
+
+		foreach ($this->conditional as $asset) 
+		{
+			$html[] .= Asset::conditional($asset->inline($this->_process), $asset->condition());
+		}
+
+		return join("\n", $html);
+	}	
 
 	protected function add($class, $type, $file, $options = null)
 	{
 		if( Valid::url($file) )
 		{
-			$this->remote[] = Asset::html($type, $file);
+			$remote = Asset::html($type, $file);
+
+			if($condition = Arr::get($options, 'condition'))
+			{
+				$remote = Asset::conditional($remote, $condition);
+			}
+
+			$this->remote[] = $remote;
 		}
 		elseif(Arr::get($options, 'condition'))
 		{

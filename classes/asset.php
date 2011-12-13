@@ -96,13 +96,18 @@ class Asset
 		return $content;
 	}
 
-	public function render($process = null)
+	public function render($process = null, $inline = TRUE)
 	{
 		if( $this->needs_recompile())
 		{
 			file_put_contents($this->destination_file, $this->compile($process));
 		}
 		return Asset::html( $this->type, $this->destination_web, $this->last_modified());
+	}
+
+	public function inline($process = null)
+	{
+		return Asset::html_inline( $this->type, $this->compile($process));
 	}
 
 	public function __toString()
@@ -124,6 +129,11 @@ class Asset
 		return Assets::is_modified_later( $this->destination_file, $this->last_modified());
 	}
 
+	static public function conditional($content, $condition)
+	{
+		return "<!--[if ".$condition."]>\n". $content."\n<![endif]-->";
+	}
+
 	static function html($type, $file, $last_modified = null)
 	{
 		if( $last_modified )
@@ -139,6 +149,18 @@ class Asset
 			case Assets::STYLESHEET:
 				return HTML::style($file);
 		}
+	}
+
+	static function html_inline($type, $content)
+	{
+		switch($type)
+		{
+			case Assets::JAVASCRIPT:
+				return "<script type=\"text/javascript\">\n".$content."\n</script>";
+
+			case Assets::STYLESHEET:
+				return "<style>\n".$content."\n</style>";
+		}		
 	}
 
 

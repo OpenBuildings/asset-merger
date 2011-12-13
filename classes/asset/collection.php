@@ -10,7 +10,7 @@
 */
 class Asset_Collection implements Iterator, Countable, ArrayAccess
 {
-	private $assets;
+	private $assets = array();
 	
 	public $name; 
 	public $type;
@@ -47,6 +47,11 @@ class Asset_Collection implements Iterator, Countable, ArrayAccess
 		}
 
 		return Asset::html( $this->type, $this->web_file, $this->last_modified());
+	}
+
+	public function inline($process = null)
+	{
+		return Asset::html_inline( $this->type, $this->compile($process));
 	}
 
 	public function needs_recompile()
