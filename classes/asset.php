@@ -96,7 +96,7 @@ class Asset
 		return $content;
 	}
 
-	public function render($process = null, $inline = TRUE)
+	public function render($process = null)
 	{
 		if( $this->needs_recompile())
 		{
