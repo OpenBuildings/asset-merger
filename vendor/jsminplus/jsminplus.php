@@ -406,7 +406,7 @@ class JSMinPlus
 					break;
 
 					case TOKEN_STRING:
-						//combine concatted strings with same quotestyle
+						// combine concatted strings with same quotestyle
 						if ($n->type == OP_PLUS && substr($left, -1) == $right[0])
 						{
 							$s = substr($left, 0, -1) . substr($right, 1);
