@@ -87,7 +87,7 @@ class Assets
 
 		foreach ($this->conditional as $asset) 
 		{
-			$html[] .= "<!--[ if ".$asset->condition().']>'. $asset->render($this->_process).'<![endif]-->';
+			$html[] .= Asset::conditional($asset->render($this->_process), $asset->condition());
 		}
 
 		return join("\n", $html);
