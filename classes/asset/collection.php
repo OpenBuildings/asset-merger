@@ -30,7 +30,7 @@ class Asset_Collection implements Iterator, Countable, ArrayAccess
 	public function compile($process = null)
 	{
 		$content = '';
-		foreach( $this->assets as $asset)
+		foreach ($this->assets as $asset)
 		{
 			$content .= "/* File: ".$asset->file."\n   Compiled at: ".date("Y-m-d H:i:s")." \n================================ */\n";
 			$content .= $asset->compile($process)."\n\n";
@@ -41,7 +41,7 @@ class Asset_Collection implements Iterator, Countable, ArrayAccess
 
 	public function render($process = null)
 	{
-		if ( $this->needs_recompile() )
+		if ($this->needs_recompile())
 		{
 			file_put_contents($this->asset_file, $this->compile($process));
 		}
@@ -61,9 +61,13 @@ class Asset_Collection implements Iterator, Countable, ArrayAccess
 
 	public function last_modified()
 	{
-		if( $this->_last_modified === NULL)
+		if ($this->_last_modified === NULL)
 		{
-			$this->_last_modified = max(array_filter(self::_invoke($this->assets, 'last_modified')));
+			$last_modified_times = array_filter(self::_invoke($this->assets, 'last_modified'));
+			if ( ! empty($last_modified_times))
+			{
+				$this->_last_modified = max($last_modified_times);
+			}
 		}
 		return $this->_last_modified;
 	}
@@ -71,7 +75,7 @@ class Asset_Collection implements Iterator, Countable, ArrayAccess
 	static public function _invoke($arr, $method)
 	{
 		$new_arr = array();
-		foreach($arr as $id => $item)
+		foreach ($arr as $id => $item)
 		{
 			$new_arr[$id] = $item->$method();
 		}
