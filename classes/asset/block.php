@@ -1,5 +1,4 @@
-<?php 
-
+<?php defined('SYSPATH') or die('No direct script access.');
 /**
 * Combines assets and merges them to single files in production
 *
@@ -8,53 +7,98 @@
 * @copyright  (c) 2011 OpenBuildings Inc.
 * @license    http://creativecommons.org/licenses/by-sa/3.0/legalcode
 */
-class Asset_Block extends Asset
-{
-	private $content = null;
+class Asset_Block extends Asset {
 
-	private $_last_modified = null;
+	/**
+	 * @var  string  content
+	 */
+	private $content = NULL;
 
-	function __construct($type, $content, $options = null)
+	/**
+	 * @var  int  last modified time
+	 */
+	private $_last_modified = NULL;
+
+	/**
+	 * Set up environment
+	 *
+	 * @param  string $type
+	 * @param  string $content
+	 * @param  array  $options
+	 */
+	function __construct($type, $content, array $options = NULL)
 	{
-		$this->processor = Arr::get($options, 'processor', Kohana::$config->load("asset-merger.processor.$type"));
+		// Set processor
+		$this->processor = Arr::get($options, 'processor', Kohana::$config->load('asset-merger.processor.'.$type));
+
+		// Set condition
 		$this->condition = Arr::get($options, 'condition');
 		
+		// Set content, file and type
 		$this->content = $content;
-		$this->file = "Asset Block";
-		$this->type = $type;
+		$this->file    = 'Asset Block';
+		$this->type    = $type;
 	}
 
-	public function compile($process = null)
+	/**
+	 * Compile asset block
+	 *
+	 * @param   bool  $process
+	 * @return  string
+	 */
+	public function compile($process = FALSE)
 	{
+		// Set content
 		$content = $this->content;
 
-		if( $process AND $this->processor)
+		if ($process AND $this->processor)
 		{
+			// Process content
 			$content = Asset_Processor::process($this->processor, $this->content);
 		}
 
 		return $content;
 	}
 
-	public function render($process = null)
+	/**
+	 * Render HTML
+	 *
+	 * @param   bool  $process
+	 * @return  string
+	 */
+	public function render($process = NULL)
 	{
 		switch($this->type)
 		{
 			case Assets::JAVASCRIPT:
-				return '<script type="text/javascript">'.$this->compile($process)."</script>";
-
+				$html = '<script type="text/javascript">'.$this->compile($process)."</script>";
+			break;
 			case Assets::STYLESHEET:
-				return '<style media="all">'.$this->compile()."</style>";
-		}		
+				$html = '<style media="all">'.$this->compile()."</style>";
+			break;
+		}
+
+		return $html;
 	}
 
+	/**
+	 * Force last modified to return NULL
+	 *
+	 * @return NULL
+	 */
 	public function last_modified()
 	{
-		return null;
+		return NULL;
 	}
 
+	/**
+	 * Force no recompile
+	 *
+	 * @return bool
+	 */
 	public function needs_recompile()
 	{
-		return false;
+		return FALSE;
 	}
-}
+
+} // End Asset_Block
