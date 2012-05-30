@@ -1,3 +1,16 @@
+**Table of Contents**  *generated with [DocToc](http://doctoc.herokuapp.com/)*
+
+- [Asset Merger](#asset-merger)
+	- [Blog Post](#blog-post)
+	- [Virtual folders](#virtual-folders)
+	- [Remote Files](#remote-files)
+	- [IE Conditional Comments](#ie-conditional-comments)
+	- [Configuration](#configuration)
+	- [Engines](#engines)
+	- [Processors](#processors)
+	- [Assets Class](#assets-class)
+	- [Extending](#extending)
+
 Asset Merger
 ============
 
