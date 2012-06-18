@@ -210,7 +210,7 @@ class Assets {
 	 * @param   array   $options
 	 * @return  Assets
 	 */
-	protected function add($class, $type, $file, array $options = NULL)
+	protected function add($class, $type, $file, array $options = array())
 	{
 		if (Valid::url($file))
 		{
@@ -247,7 +247,7 @@ class Assets {
 	 * @param   array   $options
 	 * @return  Assets
 	 */
-	public function css($file, array $options = NULL)
+	public function css($file, array $options = array())
 	{
 		return $this->add('Asset', Assets::STYLESHEET, $file, $options);
 	}
@@ -259,7 +259,7 @@ class Assets {
 	 * @param   array   $options
 	 * @return  Assets
 	 */
-	public function js($file, array $options = NULL)
+	public function js($file, array $options = array())
 	{
 		return $this->add('Asset', Assets::JAVASCRIPT, $file, $options);
 	}
@@ -271,7 +271,7 @@ class Assets {
 	 * @param   array   $options
 	 * @return  Assets
 	 */
-	public function js_block($script, array $options = NULL)
+	public function js_block($script, array $options = array())
 	{
 		return $this->add('Asset_Block', Assets::JAVASCRIPT, $script, $options);
 	}
@@ -283,7 +283,7 @@ class Assets {
 	 * @param   array   $options
 	 * @return  Assets
 	 */
-	public function css_block($css, array $options = NULL)
+	public function css_block($css, array $options = array())
 	{
 		return $this->add('Asset_Block', Assets::STYLESHEET, $css, $options);
 	}
