@@ -101,7 +101,7 @@ class Asset {
 	 * @param  string  $file
 	 * @param  array   $options
 	 */
-	function __construct($type, $file, array $options = NULL)
+	function __construct($type, $file, array $options = array())
 	{
 		// Set processor to use
 		$this->processor = Arr::get($options, 'processor', Kohana::$config->load('asset-merger.processor.'.$type));
