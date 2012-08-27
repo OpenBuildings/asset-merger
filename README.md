@@ -197,5 +197,12 @@ Extending
 You can Add your own engines and processors easily by adding a class inside classes/asset/engine, or classes/asset/processor respectfully. The class must have a static method process which will return the desired result.
 	
 
+License
+-------
+
+jamaker is Copyright © 2012 OpenBuildings Inc, developed by Ivan Kerin. It is free software, and may be redistributed under the terms specified in the LICENSE file.
+
+
+
 
 	
