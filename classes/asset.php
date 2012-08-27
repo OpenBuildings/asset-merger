@@ -265,6 +265,18 @@ class Asset {
 	}
 
 	/**
+	 * Add a local fallback
+	 *
+	 * @param   string  $content
+	 * @param   string  $condition
+	 * @return  string
+	 */
+	static public function fallback($content, $check, $fallback)
+	{
+		return $content."\n".Asset::html_inline(Assets::JAVASCRIPT, "({$check}) || document.write('<script type=\"text/javascript\" src=\"{$fallback}\"><\/script>')");
+	}
+
+	/**
 	 * Create HTML
 	 *
 	 * @param   string   $type

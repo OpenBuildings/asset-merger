@@ -63,10 +63,12 @@ Asset merger combines all your asset files and puts them in a single folder in a
 
 Remote Files
 ------------
+
 Asset merger does not do anything to remote files (starting with http://) just adds an html link/script tag to that resource.
 
 IE Conditional Comments
 -----------------------
+
 It's a common practice to have conditional comments for CSS / JS files specifically for IE to fight some of it shortcomings. This is supported by asset merger. Assets class methods support a 'condition' option which will wrap the link / script tag in a IE conditional comment.
 
 ``` php
@@ -78,6 +80,27 @@ It's a common practice to have conditional comments for CSS / JS files specifica
 		->js("functions.js", "jsmin")
 	?>
 ```
+
+JS Local Fallback
+-----------------
+
+Sometimes you need to have a local fallback to your external javascript file (from google js apis for example). You can already achieve this manually with adding a js_block, but there is a cleaner way of doing this. You just set the "fallback" option and asset-merger will do this for you. For example:
+
+``` php
+	<?php echo Assets::factory('main')
+		->css('site/homepage.css.less')
+		->js("http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js", array(
+			'fallback' => array('window.jQuery', '/js/plugins/jquery-1.7.2.min.js')
+		))
+	?>
+```
+
+The first element of the fallback array is the check if jquery is loaded (`window.jQuery`). The second is the local path to the replacement file. This will generate:
+
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2_/jquery.min.js">
+	</script><script type="text/javascript">
+	(window.jQuery) || document.write('<script type="text/javascript" src="/js/plugins/jquery-1.7.2.min.js"><\/script>')
+	</script>
 
 
 Configuration

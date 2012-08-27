@@ -223,6 +223,15 @@ class Assets {
 				$remote = Asset::conditional($remote, $condition);
 			}
 
+			if ($type === Assets::JAVASCRIPT AND $fallback = Arr::get($options, 'fallback'))
+			{
+				if ( ! is_array($fallback))
+					throw new Kohana_Exception("Fallback must be an array of 'check' and 'local path'. Check is evaluated to see if we need to include the local path");
+
+				// Remote asset with conditions
+				$remote = Asset::fallback($remote, $fallback[0], $fallback[1]);
+			}
+
 			// Add to remote
 			$this->remote[] = $remote;
 		}
