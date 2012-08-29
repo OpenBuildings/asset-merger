@@ -200,7 +200,7 @@ You can Add your own engines and processors easily by adding a class inside clas
 License
 -------
 
-jamaker is Copyright © 2012 OpenBuildings Inc, developed by Ivan Kerin. It is free software, and may be redistributed under the terms specified in the LICENSE file.
+jamaker is Copyright © 2012 Despark Ltd. developed by Ivan Kerin. It is free software, and may be redistributed under the terms specified in the LICENSE file.
 
 
 
