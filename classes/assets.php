@@ -138,6 +138,9 @@ class Assets {
 		// Go through each asset group
 		foreach ($this->groups as $type => $group)
 		{
+			if ( ! $group->count())
+				continue;
+			
 			if ($this->merge())
 			{
 				// Add merged file to html
