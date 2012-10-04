@@ -51,7 +51,7 @@ abstract class Kohana_Asset_Block extends Asset {
 		// Set content
 		$content = $this->content();
 
-		if ($process AND $this->processor)
+		if ($process AND $this->processor())
 		{
 			// Process content
 			$content = Asset_Processor::process($this->processor(), $this->content());
