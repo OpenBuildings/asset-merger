@@ -15,7 +15,7 @@ class AssetMerger_Asset_CollectionTest extends Unittest_Asset_TestCase {
 
 		$this->assertEquals(Assets::JAVASCRIPT, $collection->type());
 		$this->assertEquals('test_name', $collection->name());
-		$this->assertEquals($this->test_data_dir().'assets'.DIRECTORY_SEPARATOR.'js'.DIRECTORY_SEPARATOR.'test_name.js', $collection->destination_file());
+		$this->assertEquals($this->data_dir().'assets'.DIRECTORY_SEPARATOR.'js'.DIRECTORY_SEPARATOR.'test_name.js', $collection->destination_file());
 		$this->assertEquals('assets/js/test_name.js', $collection->destination_web());
 	}
 

@@ -10,7 +10,7 @@ class AssetMerger_assetsTest extends Unittest_Asset_TestCase {
 
 	public function test_needs_recompile()
 	{
-		$file = $this->test_data_dir().'js'.DIRECTORY_SEPARATOR.'test.js';
+		$file = $this->data_dir().'js'.DIRECTORY_SEPARATOR.'test.js';
 		$mtime = filemtime($file);
 
 		$this->assertTrue(Assets::is_modified_later($file, $mtime + 100));
@@ -36,7 +36,7 @@ class AssetMerger_assetsTest extends Unittest_Asset_TestCase {
 	
 	public function test_file_path()
 	{
-		$this->assertEquals($this->test_data_dir().'assets'.DIRECTORY_SEPARATOR.'js'.DIRECTORY_SEPARATOR.'test.js', Assets::file_path('js', 'test.js'));
+		$this->assertEquals($this->data_dir().'assets'.DIRECTORY_SEPARATOR.'js'.DIRECTORY_SEPARATOR.'test.js', Assets::file_path('js', 'test.js'));
 
 		$this->assertEquals('assets/js/test.js', Assets::web_path('js', 'test.js'));
 	}

@@ -12,8 +12,8 @@ class AssetMerger_assetTest extends Unittest_Asset_TestCase {
 	{
 		$asset = new Asset(Assets::JAVASCRIPT, 'test.js');
 
-		$this->assertEquals(self::test_data_dir().'js'.DIRECTORY_SEPARATOR.'test.js', $asset->source_file());
-		$this->assertEquals(self::test_data_dir().'assets'.DIRECTORY_SEPARATOR.'js'.DIRECTORY_SEPARATOR.'test.js', $asset->destination_file());
+		$this->assertEquals(self::data_dir().'js'.DIRECTORY_SEPARATOR.'test.js', $asset->source_file());
+		$this->assertEquals(self::data_dir().'assets'.DIRECTORY_SEPARATOR.'js'.DIRECTORY_SEPARATOR.'test.js', $asset->destination_file());
 		$this->assertEquals('assets/js/test.js', $asset->destination_web());
 		$this->assertEquals(array(), $asset->engines());
 		$this->assertEquals(Assets::JAVASCRIPT, $asset->type());
