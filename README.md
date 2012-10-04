@@ -195,7 +195,25 @@ Extending
 ---------
 
 You can Add your own engines and processors easily by adding a class inside classes/asset/engine, or classes/asset/processor respectfully. The class must have a static method process which will return the desired result.
-	
+
+Minion Task
+-----------
+
+If you have a build process that requires you to prebuild the views for your production server you can do that with the included kohana-minion task
+
+	./minion asset:generate --view={view}
+
+Where --view is the view where your assets are rendered. This way the render/merge code can be executed and all the assets generated from the command line. If you have a seperate merging strategies for each environment you can use environment variables of the command line to set the appropriate Kohana environment (this is accually useful in general). 
+
+	PHP_APP_ENV=production ./minion asset:generate --view={view}
+
+For this to work you will need to have this in your bootstrap.php file:
+
+	if (isset($_SERVER["PHP_APP_ENV"]))
+	{
+		Kohana::$environment = constant("Kohana::".strtoupper($_SERVER["PHP_APP_ENV"]));	
+	}
+
 
 License
 -------
