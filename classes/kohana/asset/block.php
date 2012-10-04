@@ -7,17 +7,17 @@
 * @copyright  (c) 2011-2012 Despark Ltd.
 * @license    http://creativecommons.org/licenses/by-sa/3.0/legalcode
 */
-class Asset_Block extends Asset {
+abstract class Kohana_Asset_Block extends Asset {
 
 	/**
 	 * @var  string  content
 	 */
-	private $content = NULL;
-
-	/**
-	 * @var  int  last modified time
-	 */
-	private $_last_modified = NULL;
+	protected $_content = NULL;
+	
+	public function content()
+	{
+		return $this->_content;
+	}
 
 	/**
 	 * Set up environment
@@ -29,15 +29,15 @@ class Asset_Block extends Asset {
 	function __construct($type, $content, array $options = NULL)
 	{
 		// Set processor
-		$this->processor = Arr::get($options, 'processor', Kohana::$config->load('asset-merger.processor.'.$type));
+		$this->_processor = Arr::get($options, 'processor', Kohana::$config->load('asset-merger.processor.'.$type));
 
 		// Set condition
-		$this->condition = Arr::get($options, 'condition');
+		$this->_condition = Arr::get($options, 'condition');
 		
 		// Set content, file and type
-		$this->content = $content;
-		$this->file    = 'Asset Block';
-		$this->type    = $type;
+		$this->_content = $content;
+		$this->_file    = 'Asset Block';
+		$this->_type    = $type;
 	}
 
 	/**
@@ -49,12 +49,12 @@ class Asset_Block extends Asset {
 	public function compile($process = FALSE)
 	{
 		// Set content
-		$content = $this->content;
+		$content = $this->content();
 
 		if ($process AND $this->processor)
 		{
 			// Process content
-			$content = Asset_Processor::process($this->processor, $this->content);
+			$content = Asset_Processor::process($this->processor(), $this->content());
 		}
 
 		return $content;
@@ -68,7 +68,7 @@ class Asset_Block extends Asset {
 	 */
 	public function render($process = NULL)
 	{
-		switch($this->type)
+		switch($this->type())
 		{
 			case Assets::JAVASCRIPT:
 				$html = '<script type="text/javascript">'.$this->compile($process)."</script>";

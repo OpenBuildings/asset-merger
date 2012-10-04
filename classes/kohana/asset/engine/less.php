@@ -7,7 +7,7 @@
 * @copyright  (c) 2011-2012 Despark Ltd.
 * @license    http://creativecommons.org/licenses/by-sa/3.0/legalcode
 */
-class Asset_Engine_Less {
+abstract class Kohana_Asset_Engine_Less {
 
 	/**
 	 * Process asset content
@@ -19,7 +19,7 @@ class Asset_Engine_Less {
 	static public function process($content, Asset $asset)
 	{
 		// Include the engine
-		include_once Kohana::find_file('vendor/lessphp', 'lessc');
+		include_once Kohana::find_file('vendor/lessphp', 'lessc.inc');
 
 		// Set Less
 		$lc = new lessc();

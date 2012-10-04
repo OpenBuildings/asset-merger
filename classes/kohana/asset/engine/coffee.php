@@ -7,7 +7,7 @@
 * @copyright  (c) 2011-2012 Despark Ltd.
 * @license    http://creativecommons.org/licenses/by-sa/3.0/legalcode
 */
-class Asset_Engine_Coffee {
+abstract class Kohana_Asset_Engine_Coffee {
 
 	/**
 	 * Process asset content
@@ -22,10 +22,17 @@ class Asset_Engine_Coffee {
 		$old = error_reporting(E_ALL & ~(E_NOTICE | E_DEPRECATED | E_STRICT));
 
 		// Include the engine
-		include_once Kohana::find_file('vendor/coffeescript', 'coffeescript');
+		include_once Kohana::find_file('vendor/coffeescript/CoffeeScript', 'Init');
 
 		// Set content
-		$content = CoffeeScript\compile($content);
+		CoffeeScript\Init::load();
+
+		$options = array(
+			'filename' => Debug::path($asset->source_file()),
+			'header' => TRUE,
+		);
+
+		$content = CoffeeScript\Compiler::compile($content, $options);
 
 		// Set error reporting
 		error_reporting($old);

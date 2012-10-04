@@ -7,7 +7,7 @@
 * @copyright  (c) 2011-2012 Despark Ltd.
 * @license    http://creativecommons.org/licenses/by-sa/3.0/legalcode
 */
-class Asset_Processor_Jsmin {
+abstract class Kohana_Asset_Processor_Jsmin {
 
 	/**
 	 * Process asset content

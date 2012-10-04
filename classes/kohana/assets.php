@@ -7,46 +7,95 @@
 * @copyright  (c) 2011-2012 Despark Ltd.
 * @license    http://creativecommons.org/licenses/by-sa/3.0/legalcode
 */
-class Assets {
+abstract class Kohana_Assets {
+
+	public static function require_valid_type($type)
+	{
+		if ( ! in_array($type, array_keys(Kohana::$config->load('asset-merger.load_paths'))))
+		{
+			throw new Kohana_Exception('Type :type must be one of [:types]', array(
+				':type'  => $type,
+				':types' => join(', ', array_keys(Kohana::$config->load('asset-merger.load_paths'))))
+			);
+		}
+		return TRUE;
+	}
+
+	/**
+	 * Determine if file was modified later then source
+	 *
+	 * @param   string  $file
+	 * @param   string  $source_modified_time
+	 * @return  bool
+	 */
+	public static function is_modified_later($file, $source_modified_time)
+	{
+		return ( ! is_file($file) OR filemtime($file) < $source_modified_time);
+	}
+
+	/**
+	 * Set file path
+	 *
+	 * @param   string  $type
+	 * @param   string  $file
+	 * @return  string
+	 */
+	public static function file_path($type, $file)
+	{
+		// Set file
+		$file = substr($file, 0, strrpos($file, $type)).$type;
+
+		return Kohana::$config->load('asset-merger.docroot').Kohana::$config->load('asset-merger.folder').DIRECTORY_SEPARATOR.$type.DIRECTORY_SEPARATOR.$file;
+	}
+
+	/**
+	 * Set web path
+	 *
+	 * @param   string  $type
+	 * @param   string  $file
+	 * @return  string
+	 */
+	public static function web_path($type, $file)
+	{
+		// Set file
+		$file = substr($file, 0, strrpos($file, $type)).$type;
+
+		return Kohana::$config->load('asset-merger.folder').'/'.$type.'/'.$file;
+	}
 
 	// Default short names for types
 	const JAVASCRIPT = 'js';
 	const STYLESHEET = 'css';
 
 	/**
-	 * @var  array  collections of assets
-	 */
-	private $assets = array();
-
-	/**
 	 * @var  bool  merge or not to merge assets
 	 */
-	private $_merge = FALSE;
+	protected $_merge = FALSE;
 
 	/**
 	 * @var  bool  process or not to process assets
 	 */
-	private $_process = FALSE;
+	protected $_process = FALSE;
 
 	/**
 	 * @var  string  name of the merged asset file
 	 */
-	private $_name;
+	protected $_name;
 
 	/**
 	 * @var  array  remote assets
 	 */
-	private $remote = array();
+	protected $_remote = array();
 
 	/**
 	 * @var  array  conditional assets
 	 */
-	private $conditional = array();
+	protected $_conditional = array();
 
 	/**
 	 * @var  array  regular assets
 	 */
-	private $groups = array();
+	protected $_groups = array();
 
 	/**
 	 * Return a new Assets object
@@ -70,7 +119,7 @@ class Assets {
 		foreach (array_keys(Kohana::$config->load('asset-merger.load_paths')) as $type)
 		{
 			// Add asset groups
-			$this->groups[$type] = new Asset_Collection($type, $name);
+			$this->_groups[$type] = new Asset_Collection($type, $name);
 		}
 
 		// Set the merged file name
@@ -78,6 +127,11 @@ class Assets {
 
 		// Set process and merge
 		$this->_process = $this->_merge = in_array(Kohana::$environment, (array) Kohana::$config->load('asset-merger.merge'));
+	}
+
+	public function name()
+	{
+		return $this->_name;
 	}
 
 	/**
@@ -88,7 +142,7 @@ class Assets {
 	 */
 	public function merge($merge = NULL)
 	{
-		if ($merge)
+		if ($merge !== NULL)
 		{
 			// Set merge
 			$this->_merge = (bool) $merge;
@@ -108,7 +162,7 @@ class Assets {
 	 */
 	public function process($process = NULL)
 	{
-		if ($process)
+		if ($process !== NULL)
 		{
 			// Set process
 			$this->_process = (bool) $process;
@@ -133,12 +187,12 @@ class Assets {
 	public function render()
 	{
 		// Set html
-		$html = $this->remote;
+		$html = $this->_remote;
 
 		// Go through each asset group
-		foreach ($this->groups as $type => $group)
+		foreach ($this->_groups as $type => $group)
 		{
-			if ( ! $group->count())
+			if ( ! count($group))
 				continue;
 			
 			if ($this->merge())
@@ -156,7 +210,7 @@ class Assets {
 			}
 		}
 
-		foreach ($this->conditional as $asset) 
+		foreach ($this->_conditional as $asset) 
 		{
 			// Add conditional assets
 			$html[] .= Asset::conditional($asset->render($this->_process), $asset->condition());
@@ -174,10 +228,10 @@ class Assets {
 	public function inline()
 	{
 		// Set html
-		$html = $this->remote;
+		$html = $this->_remote;
 
 		// Go through each asset group
-		foreach ($this->groups as $type => $group)
+		foreach ($this->_groups as $type => $group)
 		{
 			if ($this->merge())
 			{
@@ -186,7 +240,7 @@ class Assets {
 			}
 			else
 			{
-				foreach($group as $asset)
+				foreach ($group as $asset)
 				{
 					// Files not merged, add each of them to html
 					$html[] = $asset->inline($this->_process);
@@ -194,7 +248,7 @@ class Assets {
 			}
 		}
 
-		foreach ($this->conditional as $asset)
+		foreach ($this->_conditional as $asset)
 		{
 			// Add conditional assets
 			$html[] .= Asset::conditional($asset->inline($this->_process), $asset->condition());
@@ -236,17 +290,17 @@ class Assets {
 			}
 
 			// Add to remote
-			$this->remote[] = $remote;
+			$this->_remote[] = $remote;
 		}
 		elseif (Arr::get($options, 'condition'))
 		{
 			// Conditional asset, add to conditionals
-			$this->conditional[] = new $class($type, $file, $options);
+			$this->_conditional[] = new $class($type, $file, $options);
 		}
 		else
 		{
 			// Regular asset, add to groups
-			$this->groups[$type][] = new $class($type, $file, $options);
+			$this->_groups[$type][] = new $class($type, $file, $options);
 		}
 
 		return $this;
@@ -298,59 +352,6 @@ class Assets {
 	public function css_block($css, array $options = array())
 	{
 		return $this->add('Asset_Block', Assets::STYLESHEET, $css, $options);
-	}
-
-	static public function require_valid_type($type)
-	{
-		if ( ! in_array($type, array_keys(Kohana::$config->load('asset-merger.load_paths'))))
-		{
-			throw new Kohana_Exception('Type :type must be one of [:types]', array(
-				':type'  => $type,
-				':types' => join(', ', array_keys(Kohana::$config->load('asset-merger.load_paths'))))
-			);
-		}
-	}
-
-	/**
-	 * Determine if file was modified later then source
-	 *
-	 * @param   string  $file
-	 * @param   string  $source_modified_time
-	 * @return  bool
-	 */
-	static public function is_modified_later($file, $source_modified_time)
-	{
-		return ( ! is_file($file) OR filemtime($file) < $source_modified_time);
-	}
-
-	/**
-	 * Set file path
-	 *
-	 * @param   string  $type
-	 * @param   string  $file
-	 * @return  string
-	 */
-	static public function file_path($type, $file)
-	{
-		// Set file
-		$file = substr($file, 0, strrpos($file, $type)).$type;
-
-		return DOCROOT.Kohana::$config->load('asset-merger.folder').DIRECTORY_SEPARATOR.$type.DIRECTORY_SEPARATOR.$file;
-	}
-
-	/**
-	 * Set web path
-	 *
-	 * @param   string  $type
-	 * @param   string  $file
-	 * @return  string
-	 */
-	static public function web_path($type, $file)
-	{
-		// Set file
-		$file = substr($file, 0, strrpos($file, $type)).$type;
-
-		return Kohana::$config->load('asset-merger.folder').'/'.$type.'/'.$file;
 	}
 
 } // End Assets

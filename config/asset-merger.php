@@ -10,4 +10,5 @@ return array(
 	'processor'  => array(
 		Assets::STYLESHEET => 'cssmin',
 	),
+	'docroot' => DOCROOT
 );

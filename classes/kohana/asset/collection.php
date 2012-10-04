@@ -7,37 +7,62 @@
 * @copyright  (c) 2011-2012 Despark Ltd.
 * @license    http://creativecommons.org/licenses/by-sa/3.0/legalcode
 */
-class Asset_Collection implements Iterator, Countable, ArrayAccess {
+abstract class Kohana_Asset_Collection implements Iterator, Countable, ArrayAccess {
 
 	/**
 	 * @var  array  assets
 	 */
-	private $assets = array();
+	protected $_assets = array();
 
 	/**
 	 * @var  string  name
 	 */
-	public $name;
+	protected $_name;
 
 	/**
 	 * @var  string  type
 	 */
-	public $type;
+	protected $_type;
 
 	/**
 	 * @var  string  asset file
 	 */
-	public $asset_file;
+	protected $_destination_file;
 
 	/**
 	 * @var   string  web file
 	 */
-	public $web_file;
+	protected $_destination_web;
 
 	/**
 	 * @var  int  last modified time
 	 */
-	private $_last_modified = NULL;
+	protected $_last_modified = NULL;
+
+	public function destination_file()
+	{
+		return $this->_destination_file;
+	}
+
+	public function destination_web()
+	{
+		return $this->_destination_web;
+	}
+
+	public function type()
+	{
+		return $this->_type;
+	}
+
+	public function name()
+	{
+		return $this->_name;
+	}
+
+	public function assets()
+	{
+		return $this->_assets;
+	}
 
 	/**
 	 * Set up environment
@@ -51,12 +76,12 @@ class Asset_Collection implements Iterator, Countable, ArrayAccess {
 		Assets::require_valid_type($type);
 
 		// Set type and name
-		$this->type = $type;
-		$this->name = $name;
+		$this->_type = $type;
+		$this->_name = $name;
 
 		// Set asset file and web file
-		$this->asset_file = Assets::file_path($type, $name.'.'.$type);
-		$this->web_file   = Assets::web_path($type, $name.'.'.$type);
+		$this->_destination_file = Assets::file_path($type, $name.'.'.$type);
+		$this->_destination_web  = Assets::web_path($type, $name.'.'.$type);
 	}
 
 	/**
@@ -70,10 +95,10 @@ class Asset_Collection implements Iterator, Countable, ArrayAccess {
 		// Set content
 		$content = '';
 
-		foreach ($this->assets as $asset)
+		foreach ($this->assets() as $asset)
 		{
 			// Add comment to content
-			$content .= "/* File: ".$asset->file."\n   Compiled at: ".date("Y-m-d H:i:s")." \n================================ */\n";
+			$content .= "/* File: ".$asset->destination_web()."\n   Compiled at: ".date("Y-m-d H:i:s")." \n================================ */\n";
 
 			// Compile content
 			$content .= $asset->compile($process)."\n\n";
@@ -93,10 +118,10 @@ class Asset_Collection implements Iterator, Countable, ArrayAccess {
 		if ($this->needs_recompile())
 		{
 			// Recompile file
-			file_put_contents($this->asset_file, $this->compile($process));
+			file_put_contents($this->destination_file(), $this->compile($process));
 		}
 
-		return Asset::html($this->type, $this->web_file, $this->last_modified());
+		return Asset::html($this->type(), $this->destination_web(), $this->last_modified());
 	}
 
 	/**
@@ -107,7 +132,7 @@ class Asset_Collection implements Iterator, Countable, ArrayAccess {
 	 */
 	public function inline($process = FALSE)
 	{
-		return Asset::html_inline($this->type, $this->compile($process));
+		return Asset::html_inline($this->type(), $this->compile($process));
 	}
 
 	/**
@@ -117,7 +142,7 @@ class Asset_Collection implements Iterator, Countable, ArrayAccess {
 	 */
 	public function needs_recompile()
 	{
-		return Assets::is_modified_later($this->asset_file, $this->last_modified());
+		return Assets::is_modified_later($this->destination_file(), $this->last_modified());
 	}
 
 	/**
@@ -130,7 +155,7 @@ class Asset_Collection implements Iterator, Countable, ArrayAccess {
 		if ($this->_last_modified === NULL)
 		{
 			// Get last modified times
-			$last_modified_times = array_filter(self::_invoke($this->assets, 'last_modified'));
+			$last_modified_times = array_filter(self::_invoke($this->assets(), 'last_modified'));
 
 			if ( ! empty($last_modified_times))
 			{
@@ -158,47 +183,47 @@ class Asset_Collection implements Iterator, Countable, ArrayAccess {
 	{
 		if (is_null($offset))
 		{
-			$this->assets[] = $value;
+			$this->_assets[] = $value;
 		}
 		else
 		{
-			$this->assets[$offset] = $value;
+			$this->_assets[$offset] = $value;
 		}
 	}
 
 	public function offsetExists($offset) 
 	{
-		return isset($this->assets[$offset]);
+		return isset($this->_assets[$offset]);
 	}
 
 	public function offsetUnset($offset) 
 	{
-		unset($this->assets[$offset]);
+		unset($this->_assets[$offset]);
 	}
 
 	public function offsetGet($offset) 
 	{
-		return isset($this->assets[$offset]) ? $this->assets[$offset] : NULL;
+		return isset($this->_assets[$offset]) ? $this->_assets[$offset] : NULL;
 	}
 
 	public function rewind()
 	{
-		reset($this->assets);
+		reset($this->_assets);
 	}
 
 	public function current()
 	{
-		return current($this->assets);
+		return current($this->_assets);
 	}
 
 	public function key()
 	{
-		return key($this->assets);
+		return key($this->_assets);
 	}
 
 	public function next()
 	{
-		return next($this->assets);
+		return next($this->_assets);
 	}
 
 	public function valid()
@@ -208,7 +233,7 @@ class Asset_Collection implements Iterator, Countable, ArrayAccess {
 
 	public function count()
 	{
-		return count($this->assets);
+		return count($this->_assets);
 	}
 
 } // End Asset_Collection

@@ -1,0 +1,2 @@
+// TEST JS
+var test;

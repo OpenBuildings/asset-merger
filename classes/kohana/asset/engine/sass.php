@@ -7,7 +7,7 @@
 * @copyright  (c) 2011-2012 Despark Ltd.
 * @license    http://creativecommons.org/licenses/by-sa/3.0/legalcode
 */
-class Asset_Engine_Sass {
+abstract class Kohana_Asset_Engine_Sass {
 
 	/**
 	 * Process asset content
