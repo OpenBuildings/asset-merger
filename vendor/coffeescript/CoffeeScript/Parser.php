@@ -1,7 +1,7 @@
 <?php
 namespace CoffeeScript;
 use \ArrayAccess as ArrayAccess;
-Init::initialize();
+Init::init();
 
 /* Driver template for the PHP_ParserGenerator parser generator. (PHP port of LEMON)
 */

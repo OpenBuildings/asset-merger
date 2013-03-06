@@ -2,7 +2,7 @@
 
 namespace CoffeeScript;
 
-Init::initialize();
+Init::init();
 
 /**
  * CoffeeScript lexer. For the most part it's directly from the original
@@ -1063,7 +1063,7 @@ class Lexer
     {
       if ($wanted !== 'OUTDENT')
       {
-        $this->error("unmateched $tag");
+        $this->error("unmatched $tag");
       }
 
       $this->indent -= $size = last($this->indents);

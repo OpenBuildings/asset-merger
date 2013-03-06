@@ -29,7 +29,7 @@ abstract class Kohana_Asset_Engine_Coffee {
 
 		$options = array(
 			'filename' => Debug::path($asset->source_file()),
-			'header' => TRUE,
+			'header' => FALSE,
 		);
 
 		$content = CoffeeScript\Compiler::compile($content, $options);

@@ -2,7 +2,7 @@
 
 namespace CoffeeScript;
 
-Init::initialize();
+Init::init();
 
 class Error extends \Exception
 {
