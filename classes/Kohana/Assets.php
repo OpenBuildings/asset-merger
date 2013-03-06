@@ -73,10 +73,9 @@ abstract class Kohana_Assets {
 	protected $_merge = FALSE;
 
 	/**
-	 * Factory instances.
-	 * @var array
+	 * @var  array  asset collection instances
 	 */
-	protected static $_instances = array();
+	public static $instances = array();
 
 	/**
 	 * @var  bool  process or not to process assets
@@ -104,22 +103,22 @@ abstract class Kohana_Assets {
 	protected $_groups = array();
 
 	/**
-	 * Return a new Assets object
+	 * Return an instance of an asset collection.
 	 *
-	 * @param   $name   string
+	 * @param   $group   string
 	 * @return  Assets
 	 */
-	static public function factory($name)
+	static public function instance($group)
 	{
-		if (isset(self::$_instances[$name]))
+		if (isset(self::$instances[$group]))
 		{
-			$instance = self::$_instances[$name];
+			$instance = self::$instances[$group];
 		}
 		else
 		{
-			self::$_instances[$name] = new Assets($name);
+			self::$instances[$group] = new Assets($group);
 		}
-		return self::$_instances[$name];
+		return self::$instances[$group];
 	}
 
 	/**
