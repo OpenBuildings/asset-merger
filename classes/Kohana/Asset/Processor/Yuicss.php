@@ -10,22 +10,9 @@ abstract class Kohana_Asset_Processor_Yuicss {
 	 */
 	static public function process($content)
 	{
-		$tmp_dir = sys_get_temp_dir();
-
-		// Ensure we have a trailing slash at the end.
-		if ( ! preg_match('/\/$/', $tmp_dir))
-		{
-			$tmp_dir = $tmp_dir . '/';
-		}
-
-		// Ensure the dir is writable.
-		if ( ! is_writable($tmp_dir)) 
-		{
-			throw new Kohana_Exception('Temp directory is not writable.');
-		}
-
-		// Our temp file.
-		$tmp_file = $tmp_dir . '_tmp_compressed_file';
+		$tmp_file = tempnam(sys_get_temp_dir(), '_tmp_compressed_file');
+		
+		// Drop content into temp file.
 		file_put_contents($tmp_file, $content);
 
 		// Include the processor
