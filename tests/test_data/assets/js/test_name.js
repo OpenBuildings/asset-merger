@@ -1,6 +1,7 @@
 /* File: assets/js/test.js
-   Compiled at: 2012-10-04 04:16:08 
+   Compiled at: 2013-03-05 09:33:59 
 ================================ */
-// TEST JS
-var test;
+
+var test;function foo(x){return x*3;}
+function gloo(z){return z*3;}
 
