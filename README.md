@@ -112,8 +112,8 @@ config/asset-merger.php configuration file has a bunch of settings. Typical conf
 		'merge' => Kohana::PRODUCTION,
 		'folder' => "assets",
 		"load_paths" => array(
-			Assets::JAVASCRIPT => DOCROOT.'js'.DIRECTORY_SEPARATOR,
-			Assets::STYLESHEET => DOCROOT.'css'.DIRECTORY_SEPARATOR,
+			Assets::JAVASCRIPT => array( DOCROOT.'js'.DIRECTORY_SEPARATOR ),
+			Assets::STYLESHEET => array( DOCROOT.'css'.DIRECTORY_SEPARATOR ),
 		),
 		'processor' => array(
 			Assets::STYLESHEET => 'cssmin'
@@ -127,7 +127,7 @@ __folder__:
 The URL to the folder that will contain the assets. Will be automatically generated if it's not present in the file system. Must be inside DOCROOT.
 
 __load_paths__:
-Where to search for files. The CSS and JS files have different directories. Each can be an array of directories.
+Where to search for files. The CSS and JS files have different directories. Each is an array of directories.
 
 __processor__:
 The default processor to be used on each type. This can be overridden for any individual file.
