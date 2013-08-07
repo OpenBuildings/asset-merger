@@ -1,0 +1,24 @@
+
+{
+	"name": "openbuildings/asset-merger",
+	"type": "kohana-module",
+	"description": "Managing and merging assets.",
+	"keywords": ["assets", "concatenation", "JavaScript", "CSS", "LESS", "CoffeeScript"],
+	"homepage": "https://github.com/OpenBuildings/asset-merger",
+	"license": "BSD-3-Clause",
+	"authors": [
+		{
+			"name": "Ivan Kerin",
+			"email": "ivan@openbuildings.com"
+		}
+	],
+	"require": {
+		"php": ">=5.3.5",
+		"composer/installers": "*",
+		"coffeescript/coffeescript": "1.3.*",
+		"natxet/CssMin": "dev-master"
+	},
+	"require-dev": {
+		"openbuildings/kohana-test-bootstrap": "dev-master"
+	}
+}
