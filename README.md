@@ -194,7 +194,7 @@ Render the whole queue, this is called automatically on __toString
 Extending
 ---------
 
-You can Add your own engines and processors easily by adding a class inside classes/asset/engine, or classes/asset/processor respectfully. The class must have a static method process which will return the desired result.
+You can Add your own engines and processors easily by adding a class inside `classes/asset/engine`, or `classes/asset/processor` respectively. The class must have a static method `process` which will return the desired result.
 
 Minion Task
 -----------
