@@ -1,0 +1,48 @@
+{
+	"name": "samwilson/asset-merger",
+	"type": "kohana-module",
+	"description": "JS and CSS management (merging and minifying) module for Kohana.",
+	"homepage": "https://github.com/OpenBuildings/asset-merger",
+	"license": "MIT License",
+	"keywords": [
+		"kohana", "assets", "css", "js", "javascript", "minify", "phamlp",
+		"coffeescript", "cssmin", "jsmin", "jsminplus", "lessphp"
+	],
+	"authors": [
+		{
+			"name": "Ivan Kerin",
+			"email": "ikerin@gmail.com",
+			"homepage": "http://www.openbuildings.com",
+			"role": "developer"
+		},
+		{
+			"name": "kohenkatz",
+			"homepage": "https://github.com/kohenkatz",
+			"role": "developer"
+		},
+		{
+			"name": "Haralan Dobrev",
+			"email": "hkdobrev@gmail.com",
+			"homepage": "http://hkdobrev.blogspot.com",
+			"role": "developer"
+		},
+		{
+			"name": "Sam Wilson",
+			"email": "sam@samwilson.id.au",
+			"homepage": "http://samwilson.id.au",
+			"role": "developer"
+		},
+		{
+			"name": "Bob VanderClay",
+			"homepage": "http://takitapart.com",
+			"role": "developer"
+		}
+	],
+	"support": {
+		"issues": "https://github.com/OpenBuildings/asset-merger/issues",
+		"source": "https://github.com/OpenBuildings/asset-merger"
+	},
+	"require": {
+		"php": ">=5.3"
+	}
+}
