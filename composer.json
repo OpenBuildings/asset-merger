@@ -3,7 +3,7 @@
 	"type": "kohana-module",
 	"description": "JS and CSS management (merging and minifying) module for Kohana.",
 	"homepage": "https://github.com/OpenBuildings/asset-merger",
-	"license": "MIT License",
+	"license": "MIT",
 	"keywords": [
 		"kohana", "assets", "css", "js", "javascript", "minify", "phamlp",
 		"coffeescript", "cssmin", "jsmin", "jsminplus", "lessphp"
@@ -43,6 +43,7 @@
 		"source": "https://github.com/OpenBuildings/asset-merger"
 	},
 	"require": {
-		"php": ">=5.3"
+		"php": ">=5.3",
+		"composer/installers": "~1.0"
 	}
 }
