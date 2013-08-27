@@ -13,19 +13,30 @@ abstract class Kohana_Asset {
 	 * Add conditions to asset
 	 *
 	 * @param   string  $content
-	 * @param   string  $condition
+	 * @param   mixed  $condition
 	 * @return  string
 	 */
 	public static function conditional($content, $condition)
 	{
-		return "<!--[if ".$condition."]>\n". $content."\n<![endif]-->";
+		if (is_array($condition))
+		{
+			// if the second element of the array is TRUE, then the conditional
+			// comment will allow the code to show up for non-IE browsers.
+			$notIE = $condition[1];
+			// Set `$condition` back to the string so we can use it below if $notIE is FALSE.
+			$condition = $condition[0];
+			if ($notIE) {
+				return "<!--[if {$condition}]><!-->{$content}<!--<![endif]-->";
+			}
+ 		}
+ 		return "<!--[if {$condition}]>{$content}<![endif]-->";
 	}
 
 	/**
 	 * Add a local fallback
 	 *
 	 * @param   string  $content
-	 * @param   string  $condition
+	 * @param   string  $check a JavaScript expression that returns true or false
 	 * @return  string
 	 */
 	public static function fallback($content, $check, $fallback)
