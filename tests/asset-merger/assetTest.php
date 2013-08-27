@@ -57,5 +57,8 @@ class AssetMerger_assetTest extends Unittest_Asset_TestCase {
 	{
 		$conditional_html = Asset::conditional('conditional-content', 'ie');
 		$this->assertEquals("<!--[if ie]>\nconditional-content\n<![endif]-->", $conditional_html);
+		
+		$conditional_html = Asset::conditional('conditional-content', array('gte IE 9', true));
+		$this->assertEquals("<!--[if gte IE 9]><!-->\nconditional-content\n<!--<![endif]-->", $conditional_html);
 	}
 }
