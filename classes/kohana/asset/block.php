@@ -7,7 +7,7 @@
 * @copyright  (c) 2011-2012 Despark Ltd.
 * @license    http://creativecommons.org/licenses/by-sa/3.0/legalcode
 */
-abstract class Kohana_Asset_Block extends Asset {
+abstract class Kohana_Asset_Block extends Kohana_Asset {
 
 	/**
 	 * @var  string  content
