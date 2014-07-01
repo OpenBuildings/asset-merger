@@ -60,7 +60,7 @@ abstract class Kohana_Assets {
 		// Set file
 		$file = substr($file, 0, strrpos($file, $type)).$type;
 
-		return Kohana::$config->load('asset-merger.folder').'/'.$type.'/'.$file;
+		return ltrim(Kohana::$config->load('asset-merger.folder').'/'.$type.'/'.$file, '/');
 	}
 
 	// Default short names for types
