@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
-class Unittest_Asset_TestCase extends Unittest_TestCase {
+abstract class Testcase_Functest_Asset extends Testcase_Functest {
 
 	static protected $_data_dir;
 
@@ -15,19 +15,14 @@ class Unittest_Asset_TestCase extends Unittest_TestCase {
 
 	public function setUp()
 	{
-		$this->environmentDefault = array(
+		parent::setUp();
+
+		$this->environment()->backup_and_set(array(
 			'asset-merger.merge' => TRUE,
 			'asset-merger.docroot' => $this->data_dir(),
 			'asset-merger.folder' => 'assets',
 			'asset-merger.load_paths.js' => $this->data_dir().'js'.DIRECTORY_SEPARATOR,
 			'asset-merger.load_paths.css' => $this->data_dir().'css'.DIRECTORY_SEPARATOR,
-		);
-		parent::setUp();
+		));
 	}
-
-	public function test_dummy()
-	{
-		
-	}
-
-} // End Unittest_Asset_TestCase
+}

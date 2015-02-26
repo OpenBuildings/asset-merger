@@ -9,9 +9,9 @@
  * @copyright  (c) 2011-2012 Despark Ltd.
  * @license    http://creativecommons.org/licenses/by-sa/3.0/legalcode
  */
-class Minion_Task_Asset_Generate extends Minion_Task {
+class Task_Asset_Generate extends Minion_Task {
 
-	protected $_config = array(
+	protected $_options = array(
 		'view' => FALSE, 
 	);
 
@@ -22,7 +22,7 @@ class Minion_Task_Asset_Generate extends Minion_Task {
 			->rule('view', 'Kohana::find_file', array('views', ':value'));
 	}
 
-	public function execute(array $options)
+	protected function _execute(array $options)
 	{
 		$view = View::factory($options['view']);
 		$view->render();

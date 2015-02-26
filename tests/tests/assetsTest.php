@@ -6,7 +6,32 @@
  * @group asset-merger.assets
  * @package Asset Merger
  */
-class AssetMerger_assetsTest extends Unittest_Asset_TestCase {
+class AssetMerger_assetsTest extends Testcase_Functest_Asset {
+
+	public function data_construct_validation()
+	{
+		return array(
+			array(array('test'), TRUE),
+			array(array('test' => 'TEst'), TRUE),
+			array(array(Assets::JAVASCRIPT => 'test', 'test' => 'test'), TRUE),
+			array(array(Assets::JAVASCRIPT => 'test'), FALSE),
+			array(array(Assets::JAVASCRIPT => 'test', Assets::STYLESHEET => 'test'), FALSE),
+		);
+	}
+
+	/**
+	 * @dataProvider data_construct_validation
+	 */
+	public function test_construct_validation($paths, $throw_exception)
+	{
+		Kohana::$config->load('asset-merger')->set('load_paths', $paths);
+		if ($throw_exception)
+		{
+			$this->setExpectedException('Kohana_Exception');
+		}
+
+		new Assets();
+	}
 
 	public function test_needs_recompile()
 	{
@@ -34,11 +59,11 @@ class AssetMerger_assetsTest extends Unittest_Asset_TestCase {
 		$this->assertTrue(Assets::require_valid_type('php'));
 	}
 	
-	public function test_file_path()
+	public function test_file_path_and_web_path()
 	{
 		$this->assertEquals($this->data_dir().'assets'.DIRECTORY_SEPARATOR.'js'.DIRECTORY_SEPARATOR.'test.js', Assets::file_path('js', 'test.js'));
 
-		$this->assertEquals('assets/js/test.js', Assets::web_path('js', 'test.js'));
+		$this->assertEquals('/assets/js/test.js', Assets::web_path('js', 'test.js'));
 	}
 
 	public function test_render()

@@ -6,7 +6,7 @@
  * @group asset-merger.asset
  * @package Asset Merger
  */
-class AssetMerger_assetTest extends Unittest_Asset_TestCase {
+class AssetMerger_assetTest extends Testcase_Functest_Asset {
 
 	public function test_construct()
 	{
@@ -14,7 +14,7 @@ class AssetMerger_assetTest extends Unittest_Asset_TestCase {
 
 		$this->assertEquals(self::data_dir().'js'.DIRECTORY_SEPARATOR.'test.js', $asset->source_file());
 		$this->assertEquals(self::data_dir().'assets'.DIRECTORY_SEPARATOR.'js'.DIRECTORY_SEPARATOR.'test.js', $asset->destination_file());
-		$this->assertEquals('assets/js/test.js', $asset->destination_web());
+		$this->assertEquals('/assets/js/test.js', $asset->destination_web());
 		$this->assertEquals(array(), $asset->engines());
 		$this->assertEquals(Assets::JAVASCRIPT, $asset->type());
 
@@ -37,10 +37,10 @@ class AssetMerger_assetTest extends Unittest_Asset_TestCase {
 
 	public function test_html()
 	{
-		$js_html = Asset::html(Assets::JAVASCRIPT, 'file.js', 'buster');
+		$js_html = Asset::html(Assets::JAVASCRIPT, '/file.js', 'buster');
 		$this->assertEquals('<script type="text/javascript" src="/file.js?buster"></script>', $js_html);
 
-		$css_html = Asset::html(Assets::STYLESHEET, 'file.css', 'buster');
+		$css_html = Asset::html(Assets::STYLESHEET, '/file.css', 'buster');
 		$this->assertEquals('<link type="text/css" href="/file.css?buster" rel="stylesheet" />', $css_html);
 	}
 

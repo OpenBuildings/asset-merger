@@ -41,7 +41,7 @@ abstract class Kohana_Asset {
 	 * @param   integer  $cache_buster
 	 * @return  string
 	 */
-	public static function html($type, $file, $cache_buster = NULL)
+	public static function html($type, $file, $cache_buster = NULL, $async = FALSE)
 	{
 		if ($cache_buster)
 		{
@@ -53,14 +53,11 @@ abstract class Kohana_Asset {
 		switch ($type)
 		{
 			case Assets::JAVASCRIPT:
-				$type = 'script';
-			break;
+				return '<script type="text/javascript" src="'.$file.'"'.($async ? ' async="async"' : '').'></script>';
+			
 			case Assets::STYLESHEET:
-				$type = 'style';
-			break;
+				return '<link type="text/css" href="'.$file.'" rel="stylesheet" />';
 		}
-
-		return HTML::$type($file);
 	}
 
 	/**

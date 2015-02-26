@@ -7,7 +7,7 @@
  * @group asset-merger.asset.engine.coffee
  * @package Asset Merger
  */
-class AssetMerger_Asset_Engine_CoffeeTest extends Unittest_Asset_TestCase {
+class AssetMerger_Asset_Engine_CoffeeTest extends Testcase_Functest_Asset {
 
 	public function test_process()
 	{

@@ -4,19 +4,19 @@
  * Tests for Migraiton
  * @group asset-merger
  * @group asset-merger.asset.engine
- * @group asset-merger.asset.engine.php
+ * @group asset-merger.asset.engine.sass
  * @package Asset Merger
  */
-class AssetMerger_Asset_Engine_phpTest extends Unittest_Asset_TestCase {
+class AssetMerger_Asset_Engine_sassTest extends Testcase_Functest_Asset {
 
 	public function test_process()
 	{
-		$asset = new Asset(Assets::STYLESHEET, 'test-php.css.php');
+		$asset = new Asset(Assets::STYLESHEET, 'test-sass.css.sass');
 
-		$php = file_get_contents($asset->source_file());
+		$sass = file_get_contents($asset->source_file());
 		$css = file_get_contents($asset->destination_file());
 		
-		$converted = Asset_Engine_Php::process($php, $asset);
+		$converted = Asset_Engine_Sass::process($sass, $asset);
 		$this->assertEquals($css, $converted);
 	}
 
