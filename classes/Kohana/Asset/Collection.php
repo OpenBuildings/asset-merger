@@ -134,6 +134,17 @@ abstract class Kohana_Asset_Collection implements Iterator, Countable, ArrayAcce
 
 		return $content;
 	}
+	
+	/**
+	 * Generate unique integrity filename key for Caching
+	 * @author Piotr Gołasz <pgolasz@gmail.com>
+	 * @param string $filename
+	 * @return string
+	 */
+	private function integrity_key($filename = NULL)
+	{
+		return 'Asset-Merger_' . str_replace(array('\\','/','//','\\\\'), DIRECTORY_SEPARATOR, $filename);
+	}
 
 	/**
 	 * Render HTML
@@ -146,15 +157,33 @@ abstract class Kohana_Asset_Collection implements Iterator, Countable, ArrayAcce
 		if ($this->needs_recompile())
 		{
 			$file = $this->destination_file();
+			
 			// Recompile file
 			file_put_contents($this->destination_file(), $this->compile($process));
+			
+			Cache::instance()->delete($this->integrity_key($file));
 		}
 		else
 		{
 			$file = DOCROOT . $this->destination_web();
 		}
+		
+		if($this->_integrity)
+		{
+			$file_integrity_cached = Cache::instance()->get($this->integrity_key($file));
+			
+			if(!is_null($file_integrity_cached))
+			{
+				$integrity = $file_integrity_cached;
+			}
+			else
+			{
+				$integrity = $this->_hash.'-'.base64_encode(hash_file($this->_hash, $file, TRUE));
+				Cache::instance()->set($this->integrity_key($file), $integrity);
+			}
+		}
 
-		return Asset::html($this->type(), $this->destination_web(), $this->last_modified(), FALSE, $this->_integrity ? $this->_hash.'-'. base64_encode(hash_file($this->_hash, $file, TRUE)) : NULL);
+		return Asset::html($this->type(), $this->destination_web(), $this->last_modified(), FALSE, $this->_integrity ? $integrity : NULL);
 	}
 
 	/**
