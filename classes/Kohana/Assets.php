@@ -96,6 +96,16 @@ abstract class Kohana_Assets {
 	 * @var  array  regular assets
 	 */
 	protected $_groups = array();
+	
+	/**
+	 * @var bool integrity check for resources
+	 */
+	protected $_integrity = FALSE;
+	
+	/**
+	 * @var string hash for integrity validation 
+	 */
+	protected $_hash = NULL;
 
 	/**
 	 * Return a new Assets object
@@ -119,6 +129,28 @@ abstract class Kohana_Assets {
 		$load_paths = Kohana::$config->load('asset-merger.load_paths');
 		if ( ! $load_paths OR ! is_array($load_paths) OR count(array_diff(array_keys($load_paths), array(Assets::JAVASCRIPT, Assets::STYLESHEET))))
 			throw new Kohana_Exception('You must configure load_paths for asset-merger, as array with keys Assets::JAVASCRIPT AND Assets::STYLESHEET, and values the actual load paths');
+		
+		$integrity = Kohana::$config->load('asset-merger.integrity_check');
+		
+		$hashes = array('sha256','sha384','sha512');
+		
+		if(!is_bool($integrity))
+		{
+			//hash is string value
+			if(in_array($integrity, $hashes))
+			{
+				//set integrity to true and assing hash
+				$this->_integrity = TRUE;
+				$this->_hash = $integrity;
+			}
+			else
+			{
+				throw new Kohana_Exception('The provided hash is invalid, only one of :hashes',array(
+					':hashes' => implode(', ', $hashes)
+				));
+			}
+		}
+		//else integrity is FALSE - hash must be explicit
 		
 		foreach (array_keys($load_paths) as $type)
 		{
@@ -192,7 +224,7 @@ abstract class Kohana_Assets {
 	{
 		// Set html
 		$html = $this->_remote;
-
+		
 		// Go through each asset group
 		foreach ($this->_groups as $type => $group)
 		{
@@ -202,7 +234,7 @@ abstract class Kohana_Assets {
 			if ($this->merge())
 			{
 				// Add merged file to html
-				$html[] = $group->render($this->_process);
+				$html[] = $group->integrity($this->_integrity, $this->_hash)->render($this->_process);
 			}
 			else
 			{

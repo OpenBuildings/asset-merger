@@ -38,6 +38,34 @@ abstract class Kohana_Asset_Collection implements Iterator, Countable, ArrayAcce
 	 * @var  int  last modified time
 	 */
 	protected $_last_modified = NULL;
+	
+	/**
+	 *
+	 * @var bool flag for displaying integrity string
+	 */
+	protected $_integrity = FALSE;
+	
+	/**
+	 * @var string hash name
+	 */
+	protected $_hash = NULL;
+	
+	/**
+	 * Sets SRI (subresource integrity check)
+	 * @author Piotr Gołasz <pgolasz@gmail.com>
+	 * @param bool $integrity
+	 * @param string $hash
+	 * @return \Kohana_Asset_Collection
+	 */
+	public function integrity($integrity = FALSE, $hash = NULL)
+	{
+		if(is_bool($integrity) AND $integrity AND is_string($hash) AND in_array($hash, array('sha256','sha384','sha512')))
+		{
+			$this->_integrity = TRUE;
+			$this->_hash = $hash;
+		}
+		return $this;
+	}
 
 	public function destination_file()
 	{
@@ -117,11 +145,16 @@ abstract class Kohana_Asset_Collection implements Iterator, Countable, ArrayAcce
 	{
 		if ($this->needs_recompile())
 		{
+			$file = $this->destination_file();
 			// Recompile file
 			file_put_contents($this->destination_file(), $this->compile($process));
 		}
+		else
+		{
+			$file = DOCROOT . $this->destination_web();
+		}
 
-		return Asset::html($this->type(), $this->destination_web(), $this->last_modified());
+		return Asset::html($this->type(), $this->destination_web(), $this->last_modified(), FALSE, $this->_integrity ? $this->_hash.'-'. base64_encode(hash_file($this->_hash, $file, TRUE)) : NULL);
 	}
 
 	/**
