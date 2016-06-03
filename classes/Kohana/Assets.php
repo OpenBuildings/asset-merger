@@ -96,6 +96,12 @@ abstract class Kohana_Assets {
 	 * @var  array  regular assets
 	 */
 	protected $_groups = array();
+	
+	/**
+	 *
+	 * @var bool show paths for merged files
+	 */
+	protected $_showpaths = TRUE;
 
 	/**
 	 * Return a new Assets object
@@ -120,10 +126,24 @@ abstract class Kohana_Assets {
 		if ( ! $load_paths OR ! is_array($load_paths) OR count(array_diff(array_keys($load_paths), array(Assets::JAVASCRIPT, Assets::STYLESHEET))))
 			throw new Kohana_Exception('You must configure load_paths for asset-merger, as array with keys Assets::JAVASCRIPT AND Assets::STYLESHEET, and values the actual load paths');
 		
+		$show_paths = Kohana::$config->load('asset-merger.show_paths');
+		
+		if(!is_bool($show_paths))
+		{
+			//default
+			$this->_showpaths = TRUE;
+		}
+		else
+		{
+			$this->_showpaths = $show_paths;
+		}
+		
 		foreach (array_keys($load_paths) as $type)
 		{
 			// Add asset groups
 			$this->_groups[$type] = new Asset_Collection($type, $name);
+			//Pass displaying of merged files paths
+			$this->_groups[$type]->display_paths($this->_showpaths);
 		}
 
 		// Set the merged file name
