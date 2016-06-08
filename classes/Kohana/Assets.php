@@ -128,9 +128,8 @@ abstract class Kohana_Assets {
 		
 		$show_paths = Kohana::$config->load('asset-merger.show_paths');
 		
-		if(!is_bool($show_paths))
+		if (!is_bool($show_paths))
 		{
-			//default
 			$this->_showpaths = TRUE;
 		}
 		else
@@ -142,7 +141,7 @@ abstract class Kohana_Assets {
 		{
 			// Add asset groups
 			$this->_groups[$type] = new Asset_Collection($type, $name);
-			//Pass displaying of merged files paths
+			// Pass displaying of merged files paths
 			$this->_groups[$type]->display_paths($this->_showpaths);
 		}
 

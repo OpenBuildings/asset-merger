@@ -46,13 +46,12 @@ abstract class Kohana_Asset_Collection implements Iterator, Countable, ArrayAcce
 	
 	/**
 	 * Setter / Getter for merged files path displaying
-	 * @author Piotr Gołasz <pgolasz@gmail.com>
 	 * @param bool/null $path
 	 * @return bool
 	 */
 	public function display_paths($path = NULL)
 	{
-		if(is_null($path))
+		if (is_null($path))
 		{
 			return $this->_show_paths;
 		}
@@ -121,7 +120,7 @@ abstract class Kohana_Asset_Collection implements Iterator, Countable, ArrayAcce
 
 		foreach ($this->assets() as $asset)
 		{
-			if($this->_show_paths)
+			if ($this->_show_paths)
 			{
 				// Add comment to content
 				$content .= "/* File: ".$asset->destination_web()."\n   Compiled at: ".date("Y-m-d H:i:s")." \n================================ */\n";
