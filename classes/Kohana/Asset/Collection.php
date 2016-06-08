@@ -52,14 +52,13 @@ abstract class Kohana_Asset_Collection implements Iterator, Countable, ArrayAcce
 	
 	/**
 	 * Sets SRI (subresource integrity check)
-	 * @author Piotr Gołasz <pgolasz@gmail.com>
 	 * @param bool $integrity
 	 * @param string $hash
 	 * @return \Kohana_Asset_Collection
 	 */
 	public function integrity($integrity = FALSE, $hash = NULL)
 	{
-		if(is_bool($integrity) AND $integrity AND is_string($hash) AND in_array($hash, array('sha256','sha384','sha512')))
+		if (is_bool($integrity) AND $integrity AND is_string($hash) AND in_array($hash, array('sha256','sha384','sha512')))
 		{
 			$this->_integrity = TRUE;
 			$this->_hash = $hash;
@@ -137,7 +136,6 @@ abstract class Kohana_Asset_Collection implements Iterator, Countable, ArrayAcce
 	
 	/**
 	 * Generate unique integrity filename key for Caching
-	 * @author Piotr Gołasz <pgolasz@gmail.com>
 	 * @param string $filename
 	 * @return string
 	 */
@@ -168,11 +166,11 @@ abstract class Kohana_Asset_Collection implements Iterator, Countable, ArrayAcce
 			$file = DOCROOT . $this->destination_web();
 		}
 		
-		if($this->_integrity)
+		if ($this->_integrity)
 		{
 			$file_integrity_cached = Cache::instance()->get($this->integrity_key($file));
 			
-			if(!is_null($file_integrity_cached))
+			if (!is_null($file_integrity_cached))
 			{
 				$integrity = $file_integrity_cached;
 			}

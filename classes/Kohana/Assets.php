@@ -136,10 +136,10 @@ abstract class Kohana_Assets {
 		
 		if(!is_bool($integrity))
 		{
-			//hash is string value
-			if(in_array($integrity, $hashes))
+			// Hash is string value
+			if (in_array($integrity, $hashes))
 			{
-				//set integrity to true and assing hash
+				// Set integrity to true and assing hash
 				$this->_integrity = TRUE;
 				$this->_hash = $integrity;
 			}
@@ -150,7 +150,7 @@ abstract class Kohana_Assets {
 				));
 			}
 		}
-		//else integrity is FALSE - hash must be explicit
+		// Else integrity is FALSE - hash must be explicit
 		
 		foreach (array_keys($load_paths) as $type)
 		{
