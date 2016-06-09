@@ -7,6 +7,7 @@ return array(
 		Assets::JAVASCRIPT => DOCROOT.'js'.DIRECTORY_SEPARATOR,
 		Assets::STYLESHEET => DOCROOT.'css'.DIRECTORY_SEPARATOR,
 	),
+	'show_paths' => TRUE,
 	'processor'  => array(
 		Assets::STYLESHEET => 'cssmin',
 	),

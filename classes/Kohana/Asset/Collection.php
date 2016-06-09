@@ -38,6 +38,29 @@ abstract class Kohana_Asset_Collection implements Iterator, Countable, ArrayAcce
 	 * @var  int  last modified time
 	 */
 	protected $_last_modified = NULL;
+	
+	/**
+	 * @var bool show merged files paths
+	 */
+	protected $_show_paths = TRUE;
+	
+	/**
+	 * Setter / Getter for merged files path displaying
+	 * @param bool/null $path
+	 * @return bool
+	 */
+	public function display_paths($path = NULL)
+	{
+		if (is_null($path))
+		{
+			return $this->_show_paths;
+		}
+		else
+		{
+			$this->_show_paths = (bool)$path;
+			return $this->_show_paths;
+		}
+	}
 
 	public function destination_file()
 	{
@@ -97,8 +120,11 @@ abstract class Kohana_Asset_Collection implements Iterator, Countable, ArrayAcce
 
 		foreach ($this->assets() as $asset)
 		{
-			// Add comment to content
-			$content .= "/* File: ".$asset->destination_web()."\n   Compiled at: ".date("Y-m-d H:i:s")." \n================================ */\n";
+			if ($this->_show_paths)
+			{
+				// Add comment to content
+				$content .= "/* File: ".$asset->destination_web()."\n   Compiled at: ".date("Y-m-d H:i:s")." \n================================ */\n";
+			}
 
 			// Compile content
 			$content .= $asset->compile($process)."\n\n";
