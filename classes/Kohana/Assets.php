@@ -103,9 +103,9 @@ abstract class Kohana_Assets {
 	protected $_integrity = FALSE;
 	
 	/**
-	 * @var string hash for integrity validation 
+	 * @var array hashes for integrity validation 
 	 */
-	protected $_hash = NULL;
+	protected $_hash = array();
 
 	/**
 	 * Return a new Assets object
@@ -134,14 +134,14 @@ abstract class Kohana_Assets {
 		
 		$hashes = array('sha256','sha384','sha512');
 		
-		if(!is_bool($integrity))
+		if (!is_bool($integrity) AND is_string($integrity))
 		{
 			// Hash is string value
 			if (in_array($integrity, $hashes))
 			{
 				// Set integrity to true and assing hash
 				$this->_integrity = TRUE;
-				$this->_hash = $integrity;
+				$this->_hash[] = $integrity;
 			}
 			else
 			{
@@ -149,6 +149,22 @@ abstract class Kohana_Assets {
 					':hashes' => implode(', ', $hashes)
 				));
 			}
+		}
+		elseif (is_array($integrity))
+		{
+			foreach ($integrity as $int)
+			{
+				if (!in_array($int, $hashes))
+				{
+					throw new Kohana_Exception('Provided hash :hash is not within accepted :values',array(
+						':values' => implode(', ', $hashes),
+						':hash' => $int
+					));
+				}
+			}
+			
+			$this->_integrity = TRUE;
+			$this->_hash = $integrity;
 		}
 		// Else integrity is FALSE - hash must be explicit
 		
@@ -310,7 +326,7 @@ abstract class Kohana_Assets {
 
 			if (Valid::url($file) OR strpos($file, '//') === 0)
 			{
-				if($this->_integrity)
+				if ($this->_integrity)
 				{
 					// Integrity for remote files
 					$file_integrity_cached = Cache::instance()->get($this->integrity_key($file));
@@ -321,7 +337,12 @@ abstract class Kohana_Assets {
 					}
 					else
 					{
-						$integrity = $this->_hash.'-'.base64_encode(hash_file($this->_hash, $file, TRUE));
+						$integrity_string = array();
+						foreach($this->_hash as $hash)
+						{
+							$integrity_string[] = $hash.'-'.base64_encode(hash_file($hash, $file, TRUE));
+						}
+						$integrity = implode(' ', $integrity_string);
 						Cache::instance()->set($this->integrity_key($file), $integrity, PHP_INT_MAX);
 					}
 					$remote = Asset::html($type, $file, NULL, isset($options['async']), $integrity);

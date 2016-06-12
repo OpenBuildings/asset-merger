@@ -46,9 +46,9 @@ abstract class Kohana_Asset_Collection implements Iterator, Countable, ArrayAcce
 	protected $_integrity = FALSE;
 	
 	/**
-	 * @var string hash name
+	 * @var Array hashes for integrity check
 	 */
-	protected $_hash = NULL;
+	protected $_hash = array();
 	
 	/**
 	 * Sets SRI (subresource integrity check)
@@ -60,6 +60,21 @@ abstract class Kohana_Asset_Collection implements Iterator, Countable, ArrayAcce
 	{
 		if (is_bool($integrity) AND $integrity AND is_string($hash) AND in_array($hash, array('sha256','sha384','sha512')))
 		{
+			$this->_integrity = TRUE;
+			$this->_hash[] = $hash;
+		}
+		elseif (is_bool($integrity) AND $integrity AND is_array($hash))
+		{
+			foreach ($hash as $h)
+			{
+				if (!in_array($h, array('sha256','sha384','sha512')))
+				{
+					throw new Kohana_Exception('Provided hash :hash is not within accepted :values',array(
+						':values' => implode(', ', array('sha256','sha384','sha512')),
+						':hash' => $h
+					));
+				}
+			}
 			$this->_integrity = TRUE;
 			$this->_hash = $hash;
 		}
@@ -176,7 +191,12 @@ abstract class Kohana_Asset_Collection implements Iterator, Countable, ArrayAcce
 			}
 			else
 			{
-				$integrity = $this->_hash.'-'.base64_encode(hash_file($this->_hash, $file, TRUE));
+				$integrity_string = array();
+				foreach ($this->_hash as $hash)
+				{
+					$integrity_string[] = $hash.'-'.base64_encode(hash_file($hash, $file, TRUE));
+				}
+				$integrity = implode(' ', $integrity_string);
 				Cache::instance()->set($this->integrity_key($file), $integrity, PHP_INT_MAX);
 			}
 		}
