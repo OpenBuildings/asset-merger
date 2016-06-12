@@ -310,8 +310,25 @@ abstract class Kohana_Assets {
 
 			if (Valid::url($file) OR strpos($file, '//') === 0)
 			{
-				// Remote asset
-				$remote = Asset::html($type, $file, isset($options['async']));
+				if($this->_integrity)
+				{
+					$file_integrity_cached = Cache::instance()->get($this->integrity_key($file));
+					
+					if (!is_null($file_integrity_cached))
+					{
+						$integrity = $file_integrity_cached;
+					}
+					else
+					{
+						$integrity = $this->_hash.'-'.base64_encode(hash_file($this->_hash, $file, TRUE));
+						Cache::instance()->set($this->integrity_key($file), $integrity);
+					}
+					$remote = Asset::html($type, $file, NULL, isset($options['async']), $integrity);
+				}
+				else
+				{
+					$remote = Asset::html($type, $file, NULL, isset($options['async']), $this->_integrity);
+				}
 
 				if ($condition = Arr::get($options, 'condition'))
 				{
@@ -345,6 +362,16 @@ abstract class Kohana_Assets {
 		}
 
 		return $this;
+	}
+	
+	/**
+	 * Generate unique integrity filename key for Caching
+	 * @param string $filename
+	 * @return string
+	 */
+	private function integrity_key($filename = NULL)
+	{
+		return 'Asset-Merger_' . str_replace(array('\\','/','//','\\\\'), DIRECTORY_SEPARATOR, $filename);
 	}
 
 	/**
