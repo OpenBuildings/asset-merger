@@ -177,7 +177,7 @@ abstract class Kohana_Asset_Collection implements Iterator, Countable, ArrayAcce
 			else
 			{
 				$integrity = $this->_hash.'-'.base64_encode(hash_file($this->_hash, $file, TRUE));
-				Cache::instance()->set($this->integrity_key($file), $integrity);
+				Cache::instance()->set($this->integrity_key($file), $integrity, PHP_INT_MAX);
 			}
 		}
 

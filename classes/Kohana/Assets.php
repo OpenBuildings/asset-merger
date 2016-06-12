@@ -312,6 +312,7 @@ abstract class Kohana_Assets {
 			{
 				if($this->_integrity)
 				{
+					// Integrity for remote files
 					$file_integrity_cached = Cache::instance()->get($this->integrity_key($file));
 					
 					if (!is_null($file_integrity_cached))
@@ -321,7 +322,7 @@ abstract class Kohana_Assets {
 					else
 					{
 						$integrity = $this->_hash.'-'.base64_encode(hash_file($this->_hash, $file, TRUE));
-						Cache::instance()->set($this->integrity_key($file), $integrity);
+						Cache::instance()->set($this->integrity_key($file), $integrity, PHP_INT_MAX);
 					}
 					$remote = Asset::html($type, $file, NULL, isset($options['async']), $integrity);
 				}
