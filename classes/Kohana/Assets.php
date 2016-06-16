@@ -98,6 +98,16 @@ abstract class Kohana_Assets {
 	protected $_groups = array();
 	
 	/**
+	 * @var bool integrity check for resources
+	 */
+	protected $_integrity = FALSE;
+	
+	/**
+	 * @var array hashes for integrity validation 
+	 */
+	protected $_hash = array();
+	
+	/**
 	 *
 	 * @var bool show paths for merged files
 	 */
@@ -136,6 +146,44 @@ abstract class Kohana_Assets {
 		{
 			$this->_showpaths = $show_paths;
 		}
+		
+		$integrity = Kohana::$config->load('asset-merger.integrity_check');
+		
+		$hashes = array('sha256','sha384','sha512');
+		
+		if (!is_bool($integrity) AND is_string($integrity))
+		{
+			// Hash is string value
+			if (in_array($integrity, $hashes))
+			{
+				// Set integrity to true and assing hash
+				$this->_integrity = TRUE;
+				$this->_hash[] = $integrity;
+			}
+			else
+			{
+				throw new Kohana_Exception('The provided hash is invalid, only one of :hashes',array(
+					':hashes' => implode(', ', $hashes)
+				));
+			}
+		}
+		elseif (is_array($integrity))
+		{
+			foreach ($integrity as $int)
+			{
+				if (!in_array($int, $hashes))
+				{
+					throw new Kohana_Exception('Provided hash :hash is not within accepted :values',array(
+						':values' => implode(', ', $hashes),
+						':hash' => $int
+					));
+				}
+			}
+			
+			$this->_integrity = TRUE;
+			$this->_hash = $integrity;
+		}
+		// Else integrity is FALSE - hash must be explicit
 		
 		foreach (array_keys($load_paths) as $type)
 		{
@@ -211,7 +259,7 @@ abstract class Kohana_Assets {
 	{
 		// Set html
 		$html = $this->_remote;
-
+		
 		// Go through each asset group
 		foreach ($this->_groups as $type => $group)
 		{
@@ -221,7 +269,7 @@ abstract class Kohana_Assets {
 			if ($this->merge())
 			{
 				// Add merged file to html
-				$html[] = $group->render($this->_process);
+				$html[] = $group->integrity($this->_integrity, $this->_hash)->render($this->_process);
 			}
 			else
 			{
@@ -297,8 +345,31 @@ abstract class Kohana_Assets {
 
 			if (Valid::url($file) OR strpos($file, '//') === 0)
 			{
-				// Remote asset
-				$remote = Asset::html($type, $file, isset($options['async']));
+				if ($this->_integrity)
+				{
+					// Integrity for remote files
+					$file_integrity_cached = Cache::instance()->get($this->integrity_key($file));
+					
+					if (!is_null($file_integrity_cached))
+					{
+						$integrity = $file_integrity_cached;
+					}
+					else
+					{
+						$integrity_string = array();
+						foreach($this->_hash as $hash)
+						{
+							$integrity_string[] = $hash.'-'.base64_encode(hash_file($hash, $file, TRUE));
+						}
+						$integrity = implode(' ', $integrity_string);
+						Cache::instance()->set($this->integrity_key($file), $integrity, PHP_INT_MAX);
+					}
+					$remote = Asset::html($type, $file, NULL, isset($options['async']), $integrity);
+				}
+				else
+				{
+					$remote = Asset::html($type, $file, NULL, isset($options['async']), $this->_integrity);
+				}
 
 				if ($condition = Arr::get($options, 'condition'))
 				{
@@ -332,6 +403,16 @@ abstract class Kohana_Assets {
 		}
 
 		return $this;
+	}
+	
+	/**
+	 * Generate unique integrity filename key for Caching
+	 * @param string $filename
+	 * @return string
+	 */
+	private function integrity_key($filename = NULL)
+	{
+		return 'Asset-Merger_' . str_replace(array('\\','/','//','\\\\'), DIRECTORY_SEPARATOR, $filename);
 	}
 
 	/**

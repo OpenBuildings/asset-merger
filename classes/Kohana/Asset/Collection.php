@@ -60,6 +60,45 @@ abstract class Kohana_Asset_Collection implements Iterator, Countable, ArrayAcce
 			$this->_show_paths = (bool)$path;
 			return $this->_show_paths;
 		}
+	 *
+	 * @var bool flag for displaying integrity string
+	 */
+	protected $_integrity = FALSE;
+	
+	/**
+	 * @var Array hashes for integrity check
+	 */
+	protected $_hash = array();
+	
+	/**
+	 * Sets SRI (subresource integrity check)
+	 * @param bool $integrity
+	 * @param string $hash
+	 * @return \Kohana_Asset_Collection
+	 */
+	public function integrity($integrity = FALSE, $hash = NULL)
+	{
+		if (is_bool($integrity) AND $integrity AND is_string($hash) AND in_array($hash, array('sha256','sha384','sha512')))
+		{
+			$this->_integrity = TRUE;
+			$this->_hash[] = $hash;
+		}
+		elseif (is_bool($integrity) AND $integrity AND is_array($hash))
+		{
+			foreach ($hash as $h)
+			{
+				if (!in_array($h, array('sha256','sha384','sha512')))
+				{
+					throw new Kohana_Exception('Provided hash :hash is not within accepted :values',array(
+						':values' => implode(', ', array('sha256','sha384','sha512')),
+						':hash' => $h
+					));
+				}
+			}
+			$this->_integrity = TRUE;
+			$this->_hash = $hash;
+		}
+		return $this;
 	}
 
 	public function destination_file()
@@ -132,6 +171,16 @@ abstract class Kohana_Asset_Collection implements Iterator, Countable, ArrayAcce
 
 		return $content;
 	}
+	
+	/**
+	 * Generate unique integrity filename key for Caching
+	 * @param string $filename
+	 * @return string
+	 */
+	private function integrity_key($filename = NULL)
+	{
+		return 'Asset-Merger_' . str_replace(array('\\','/','//','\\\\'), DIRECTORY_SEPARATOR, $filename);
+	}
 
 	/**
 	 * Render HTML
@@ -143,11 +192,39 @@ abstract class Kohana_Asset_Collection implements Iterator, Countable, ArrayAcce
 	{
 		if ($this->needs_recompile())
 		{
+			$file = $this->destination_file();
+			
 			// Recompile file
 			file_put_contents($this->destination_file(), $this->compile($process));
+			
+			Cache::instance()->delete($this->integrity_key($file));
+		}
+		else
+		{
+			$file = DOCROOT . $this->destination_web();
+		}
+		
+		if ($this->_integrity)
+		{
+			$file_integrity_cached = Cache::instance()->get($this->integrity_key($file));
+			
+			if (!is_null($file_integrity_cached))
+			{
+				$integrity = $file_integrity_cached;
+			}
+			else
+			{
+				$integrity_string = array();
+				foreach ($this->_hash as $hash)
+				{
+					$integrity_string[] = $hash.'-'.base64_encode(hash_file($hash, $file, TRUE));
+				}
+				$integrity = implode(' ', $integrity_string);
+				Cache::instance()->set($this->integrity_key($file), $integrity, PHP_INT_MAX);
+			}
 		}
 
-		return Asset::html($this->type(), $this->destination_web(), $this->last_modified());
+		return Asset::html($this->type(), $this->destination_web(), $this->last_modified(), FALSE, $this->_integrity ? $integrity : NULL);
 	}
 
 	/**

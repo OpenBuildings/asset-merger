@@ -41,7 +41,7 @@ abstract class Kohana_Asset {
 	 * @param   integer  $cache_buster
 	 * @return  string
 	 */
-	public static function html($type, $file, $cache_buster = NULL, $async = FALSE)
+	public static function html($type, $file, $cache_buster = NULL, $async = FALSE, $integrity = NULL)
 	{
 		if ($cache_buster)
 		{
@@ -53,10 +53,10 @@ abstract class Kohana_Asset {
 		switch ($type)
 		{
 			case Assets::JAVASCRIPT:
-				return '<script type="text/javascript" src="'.$file.'"'.($async ? ' async="async"' : '').'></script>';
+				return '<script type="text/javascript" src="'.$file.'"'.($async ? ' async="async"' : '').(!is_null($integrity) ? ' integrity="'.$integrity.'" crossorigin="anonymous"' : '').'></script>';
 			
 			case Assets::STYLESHEET:
-				return '<link type="text/css" href="'.$file.'" rel="stylesheet" />';
+				return '<link type="text/css" href="'.$file.'"'.(!is_null($integrity) ? ' integrity="'.$integrity.'" crossorigin="anonymous"' : '').' rel="stylesheet" />';
 		}
 	}
 
