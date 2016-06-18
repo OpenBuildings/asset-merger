@@ -60,6 +60,8 @@ abstract class Kohana_Asset_Collection implements Iterator, Countable, ArrayAcce
 			$this->_show_paths = (bool)$path;
 			return $this->_show_paths;
 		}
+	}
+	/**
 	 *
 	 * @var bool flag for displaying integrity string
 	 */
