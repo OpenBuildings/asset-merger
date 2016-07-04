@@ -203,7 +203,7 @@ abstract class Kohana_Asset_Collection implements Iterator, Countable, ArrayAcce
 		}
 		else
 		{
-			$file = DOCROOT . $this->destination_web();
+			$file = str_replace(Kohana::$base_url, '', DOCROOT . $this->destination_web());
 		}
 		
 		if ($this->_integrity)
